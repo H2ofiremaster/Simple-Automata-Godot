@@ -6,6 +6,8 @@ const PATH: String = "res://resources/ruleset.tres"
 @export var cells: Array[CellType];
 @export var rules: Array[Rule];
 
+func default_type() -> CellType:
+	return cells[0];
 
 func get_cell(cell_name: String) -> CellType:
 	for cell in cells:

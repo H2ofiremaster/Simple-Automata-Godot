@@ -88,6 +88,7 @@ size_flags_vertical = 3
 layout_mode = 2
 
 [node name="CellLabel" type="HBoxContainer" parent="GridContainer"]
+modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 alignment = 1
 script = ExtResource("5_y3s0c")
@@ -99,6 +100,9 @@ horizontal_alignment = 1
 [node name="OpeningBracket" type="Label" parent="GridContainer/CellLabel"]
 layout_mode = 2
 text = "["
+
+[node name="StateContainer" type="HBoxContainer" parent="GridContainer/CellLabel"]
+layout_mode = 2
 
 [node name="ClosingBracket" type="Label" parent="GridContainer/CellLabel"]
 layout_mode = 2
@@ -143,4 +147,5 @@ columns = 3
 [connection signal="pressed" from="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/PlaybackButtons/StepButton" to="." method="_on_step_button_pressed"]
 [connection signal="pressed" from="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/PlaybackButtons/StepButton" to="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer" method="_on_step_button_pressed"]
 [connection signal="text_submitted" from="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/GridSizeContainer/GridSizeEdit" to="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer" method="_on_grid_size_edit_text_submitted"]
-[connection signal="hovered_cell_updated" from="GridContainer/GridAspect/Grid" to="." method="_on_grid_hovered_cell_updated"]
+[connection signal="cell_state_updated" from="GridContainer/GridAspect/Grid" to="GridContainer/CellLabel" method="_on_grid_cell_state_updated"]
+[connection signal="cell_type_updated" from="GridContainer/GridAspect/Grid" to="GridContainer/CellLabel" method="_on_grid_cell_type_updated"]

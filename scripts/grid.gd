@@ -1,19 +1,21 @@
 class_name Grid extends GridContainer
 
-signal hovered_cell_updated(cell: Cell);
-signal scrolled;
+signal cell_type_updated(cell: Cell);
+signal cell_state_updated(cell: Cell);
 
 const LINE_COLOR = Color.DIM_GRAY;
 const SPACING = 40;
 const TEST_CELL_TYPE = preload("res://resources/test_cell_type.tres")
-const BLANK_RULESET = preload("res://resources/blank_ruleset.tres")
 const CELL_OUTLINE = preload("res://scenes/cell_outline.tscn")
 
 var cells: Array[Cell];
 var selected_cell_type: CellType;
+var ruleset: Ruleset;
 
-func initialize() -> void:
-	generate(BLANK_RULESET);
+func initialize(init_ruleset: Ruleset) -> void:
+	self.ruleset = init_ruleset;
+	self.selected_cell_type = ruleset.default_type();
+	generate();
 
 
 func add_line(point1: Vector2, point2: Vector2) -> void:
@@ -27,18 +29,13 @@ func add_line(point1: Vector2, point2: Vector2) -> void:
 	self.add_child(line);
 
 
-func add_cell(ruleset: Ruleset) -> Cell:
-	var new_cell: Cell = Cell.default(ruleset);
-	self.add_child(new_cell);
-	return new_cell;
 	
-func fill_default(ruleset: Ruleset) -> void:
+func fill_default() -> void:
 	for i in cells.size():
-		cells[i] = Cell.default(ruleset);
-	#print(cells)
+		cells[i] = Cell.default(self);
 	refresh();
 
-func next_generation(ruleset: Ruleset) -> void:
+func next_generation() -> void:
 	var new_cells: Array[Cell] = [];
 	new_cells.resize(cells.size());
 	for i in new_cells.size():
@@ -72,11 +69,10 @@ func get_neighbor(index: int, y_offset: int, x_offset: int) -> Cell:
 	return cells[index + (columns * y_offset) + x_offset];
 
 
-func generate(ruleset: Ruleset) -> void:
-	var _cell_size: Vector2 = self.size / self.columns;
-	
+func generate() -> void:
+	#var _cell_size: Vector2 = self.size / self.columns;
 	cells.resize(self.columns * self.columns);
-	fill_default(ruleset);
+	fill_default();
 	
 	add_theme_constant_override("v_separation", max(SPACING / columns, 2));
 	add_theme_constant_override("h_separation", max(SPACING / columns, 2));
@@ -93,14 +89,15 @@ func refresh() -> void:
 	for cell in cells:
 		self.add_child(cell);
 		cell.hovered_cell_updated.connect(_on_hovered_cell_updated);
-		cell.type_change_requested.connect(_on_cell_type_change_requested);
+		cell.updated.connect(_on_cell_updated);
 
 
 func _on_hovered_cell_updated(cell: Cell) -> void:
-	hovered_cell_updated.emit(cell);
+	cell_type_updated.emit(cell);
 
 
-func _on_cell_type_change_requested(cell: Cell) -> void:
-	cell.type = selected_cell_type;
+func _on_cell_updated(cell: Cell, type_updated: bool, state_updated: bool) -> void:
+	if type_updated: cell_type_updated.emit(cell);
+	if state_updated: cell_state_updated.emit(cell);
 
 

@@ -66,7 +66,7 @@ func _on_state_edit_text_changed() -> void:
 	var selected_state: String = state_select.get_item_text(selected_state_id);
 	var lines := text.split("\n", false);
 	if lines.size() == 0 or selected_state == "":
-		return
+		return;
 	type.states[selected_state] = Array(lines);
 
 

@@ -11,7 +11,7 @@ func transform(cell: Cell, neighbors: Array[Cell], ruleset: Ruleset) -> void:
 	for condition in conditions:
 		i += 1;
 		if not condition.matches(cell, neighbors, ruleset):
-			print("%d: Condition '%s' failed, aborting." % [i, condition])
+			#print("%d: Condition '%s' failed, aborting." % [i, condition])
 			return;
 	if output.cell_name:
 		print("Updating cell name: %s -> %s" % [cell.name, output.cell_name]);

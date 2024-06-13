@@ -41,9 +41,9 @@ func initialize(init_ruleset: Ruleset, init_pattern: Pattern) -> void:
 		
 		var state: Dictionary = pattern.cell_state;
 		var state_array: Array[String] = [];
-		var keys: Array[String]; 
+		var keys: Array[String] = []; 
 		keys.assign(state.keys());
-		var values: Array[String]; 
+		var values: Array[String] = []; 
 		values.assign(state.values());
 		for i in range(keys.size()):
 			var state_entry := keys[i] + " = " + values[i];

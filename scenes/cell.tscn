@@ -20,5 +20,6 @@ ignore_texture_size = true
 stretch_mode = 0
 script = ExtResource("1_ukqhg")
 
-[connection signal="button_down" from="." to="." method="_on_button_down"]
+[connection signal="gui_input" from="." to="." method="_on_gui_input"]
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
