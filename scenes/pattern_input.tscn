@@ -1,0 +1,78 @@
+[gd_scene load_steps=2 format=3 uid="uid://b5afhyldsq2xg"]
+
+[ext_resource type="Script" path="res://scripts/pattern_input.gd" id="1_wa6rc"]
+
+[node name="PatternInput" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_wa6rc")
+
+[node name="Margins" type="MarginContainer" parent="."]
+layout_mode = 2
+
+[node name="Container" type="VBoxContainer" parent="Margins"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="StatusBar" type="HBoxContainer" parent="Margins/Container"]
+layout_mode = 2
+
+[node name="NotLabel" type="Label" parent="Margins/Container/StatusBar"]
+visible = false
+layout_mode = 2
+text = "Not "
+
+[node name="NameSelect" type="OptionButton" parent="Margins/Container/StatusBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+item_count = 2
+selected = 0
+fit_to_longest_item = false
+popup/item_0/text = "Default"
+popup/item_0/id = 0
+popup/item_1/text = ""
+popup/item_1/id = 1
+popup/item_1/separator = true
+
+[node name="ExpandButton" type="Button" parent="Margins/Container/StatusBar"]
+layout_mode = 2
+toggle_mode = true
+text = " v "
+
+[node name="LabelContainer" type="HBoxContainer" parent="Margins/Container"]
+layout_mode = 2
+alignment = 1
+
+[node name="InvertToggle" type="CheckBox" parent="Margins/Container/LabelContainer"]
+visible = false
+layout_mode = 2
+text = "↷"
+
+[node name="StateLabel" type="Label" parent="Margins/Container/LabelContainer"]
+visible = false
+layout_mode = 2
+text = "With states:"
+horizontal_alignment = 1
+
+[node name="StateEdit" type="LineEdit" parent="Margins/Container"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+placeholder_text = "state_1 = value_1, 
+state_2 = value_2, 
+..."
+
+[node name="ErrorLabel" type="Label" parent="Margins/Container"]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+text = "Invalid state definition: "
+
+[connection signal="item_selected" from="Margins/Container/StatusBar/NameSelect" to="." method="_on_name_select_item_selected"]
+[connection signal="toggled" from="Margins/Container/StatusBar/ExpandButton" to="." method="_on_expand_button_toggled"]
+[connection signal="toggled" from="Margins/Container/LabelContainer/InvertToggle" to="." method="_on_invert_toggle_toggled"]
+[connection signal="text_submitted" from="Margins/Container/StateEdit" to="." method="_on_state_edit_text_submitted"]

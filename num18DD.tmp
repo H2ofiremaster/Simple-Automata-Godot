@@ -1,0 +1,33 @@
+[gd_scene load_steps=3 format=3 uid="uid://dpx080csyd7fn"]
+
+[ext_resource type="PackedScene" uid="uid://b5afhyldsq2xg" path="res://scenes/pattern_input.tscn" id="1_h0yy3"]
+[ext_resource type="Script" path="res://scripts/number_condition_editor.gd" id="1_ybsox"]
+
+[node name="NumberConditionEditor" type="PanelContainer"]
+script = ExtResource("1_ybsox")
+
+[node name="Margins" type="MarginContainer" parent="."]
+layout_mode = 2
+
+[node name="Container" type="HBoxContainer" parent="Margins"]
+layout_mode = 2
+
+[node name="IfLabel" type="Label" parent="Margins/Container"]
+layout_mode = 2
+text = "If "
+
+[node name="NumberInput" type="LineEdit" parent="Margins/Container"]
+layout_mode = 2
+placeholder_text = "Amount(s)"
+expand_to_text_length = true
+
+[node name="NeighborsLabel" type="Label" parent="Margins/Container"]
+layout_mode = 2
+text = " neighbors are "
+
+[node name="PatternInput" parent="Margins/Container" instance=ExtResource("1_h0yy3")]
+layout_mode = 2
+default_text = "Anything"
+can_invert = true
+
+[connection signal="text_submitted" from="Margins/Container/NumberInput" to="." method="_on_number_input_text_submitted"]

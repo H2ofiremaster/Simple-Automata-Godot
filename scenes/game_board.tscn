@@ -1,0 +1,146 @@
+[gd_scene load_steps=6 format=3 uid="uid://vtu33imv81cn"]
+
+[ext_resource type="Script" path="res://scripts/game_board.gd" id="1_b76gu"]
+[ext_resource type="PackedScene" uid="uid://3vpj1cw7ggv8" path="res://scenes/grid.tscn" id="1_i4pjs"]
+[ext_resource type="PackedScene" uid="uid://ct68w6j7x24ao" path="res://scenes/cell_display.tscn" id="2_u3xfy"]
+[ext_resource type="Script" path="res://scripts/controls.gd" id="3_7t8q0"]
+[ext_resource type="Script" path="res://scripts/cell_label.gd" id="5_y3s0c"]
+
+[node name="GameBoard" type="HBoxContainer"]
+clip_contents = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_b76gu")
+cell_display_scene = ExtResource("2_u3xfy")
+
+[node name="ButtonContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="OuterMargins" type="MarginContainer" parent="ButtonContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Panel" type="PanelContainer" parent="ButtonContainer/OuterMargins"]
+layout_mode = 2
+
+[node name="InnerMargins" type="MarginContainer" parent="ButtonContainer/OuterMargins/Panel"]
+layout_mode = 2
+
+[node name="ControlsContainer" type="VBoxContainer" parent="ButtonContainer/OuterMargins/Panel/InnerMargins"]
+layout_mode = 2
+script = ExtResource("3_7t8q0")
+
+[node name="ControlsLabel" type="Label" parent="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Controls
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PlaybackButtons" type="HBoxContainer" parent="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer"]
+layout_mode = 2
+
+[node name="StartButton" type="Button" parent="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/PlaybackButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Start"
+
+[node name="StepButton" type="Button" parent="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/PlaybackButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Step"
+
+[node name="StopButton" type="Button" parent="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/PlaybackButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Stop
+"
+
+[node name="GridSizeContainer" type="VBoxContainer" parent="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer"]
+layout_mode = 2
+
+[node name="GridSizeLabel" type="Label" parent="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/GridSizeContainer"]
+layout_mode = 2
+text = "Grid Size"
+
+[node name="GridSizeEdit" type="LineEdit" parent="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/GridSizeContainer"]
+layout_mode = 2
+text = "5"
+
+[node name="GridContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="GridAspect" type="AspectRatioContainer" parent="GridContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Grid" parent="GridContainer/GridAspect" instance=ExtResource("1_i4pjs")]
+layout_mode = 2
+
+[node name="CellLabel" type="HBoxContainer" parent="GridContainer"]
+layout_mode = 2
+alignment = 1
+script = ExtResource("5_y3s0c")
+
+[node name="Name" type="Label" parent="GridContainer/CellLabel"]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="OpeningBracket" type="Label" parent="GridContainer/CellLabel"]
+layout_mode = 2
+text = "["
+
+[node name="ClosingBracket" type="Label" parent="GridContainer/CellLabel"]
+layout_mode = 2
+text = "]"
+
+[node name="OuterMargins" type="MarginContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Panel" type="PanelContainer" parent="OuterMargins"]
+layout_mode = 2
+
+[node name="InnerMargins" type="MarginContainer" parent="OuterMargins/Panel"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="CellSelectorContainer" type="VBoxContainer" parent="OuterMargins/Panel/InnerMargins"]
+layout_mode = 2
+
+[node name="CellSelectorLabel" type="Label" parent="OuterMargins/Panel/InnerMargins/CellSelectorContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Cells"
+horizontal_alignment = 1
+
+[node name="CellSelector" type="GridContainer" parent="OuterMargins/Panel/InnerMargins/CellSelectorContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 3
+
+[connection signal="pressed" from="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/PlaybackButtons/StepButton" to="." method="_on_step_button_pressed"]
+[connection signal="pressed" from="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/PlaybackButtons/StepButton" to="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer" method="_on_step_button_pressed"]
+[connection signal="text_submitted" from="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/GridSizeContainer/GridSizeEdit" to="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer" method="_on_grid_size_edit_text_submitted"]
+[connection signal="hovered_cell_updated" from="GridContainer/GridAspect/Grid" to="." method="_on_grid_hovered_cell_updated"]

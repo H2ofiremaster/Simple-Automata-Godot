@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://b6u5wj14jbxkn"]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_vamy1"]
+[ext_resource type="PackedScene" uid="uid://vtu33imv81cn" path="res://scenes/game_board.tscn" id="3_675om"]
+[ext_resource type="PackedScene" uid="uid://besghlgfdt1w1" path="res://scenes/ruleset_creator.tscn" id="4_14myf"]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_vamy1")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="RulesetCreator" parent="CanvasLayer" instance=ExtResource("4_14myf")]
+visible = false
+
+[node name="GameBoard" parent="." instance=ExtResource("3_675om")]
+layout_mode = 1
+grow_horizontal = 1
+grow_vertical = 1
+
+[connection signal="ruleset_changed" from="CanvasLayer/RulesetCreator" to="GameBoard" method="_on_ruleset_creator_ruleset_changed"]

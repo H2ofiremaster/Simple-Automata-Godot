@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://ct68w6j7x24ao"]
+
+[ext_resource type="Texture2D" uid="uid://c68a6k16yw0ik" path="res://sprites/blank.png" id="1_ch4ic"]
+[ext_resource type="Script" path="res://scripts/cell_display.gd" id="2_ps02s"]
+
+[node name="CellDisplay" type="TextureButton"]
+custom_minimum_size = Vector2(0, 128)
+offset_right = 1920.0
+offset_bottom = 1920.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+texture_normal = ExtResource("1_ch4ic")
+texture_pressed = ExtResource("1_ch4ic")
+texture_hover = ExtResource("1_ch4ic")
+texture_disabled = ExtResource("1_ch4ic")
+texture_focused = ExtResource("1_ch4ic")
+ignore_texture_size = true
+stretch_mode = 4
+script = ExtResource("2_ps02s")
+
+[connection signal="pressed" from="." to="." method="_on_pressed"]

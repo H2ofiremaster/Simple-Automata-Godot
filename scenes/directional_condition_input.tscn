@@ -1,0 +1,59 @@
+[gd_scene load_steps=2 format=3 uid="uid://b5q0xuxj56twn"]
+
+[ext_resource type="Script" path="res://scripts/directional_condition_input.gd" id="1_8sspf"]
+
+[node name="DirectionalConditionInput" type="GridContainer"]
+columns = 3
+script = ExtResource("1_8sspf")
+
+[node name="Northwest" type="Button" parent="."]
+layout_mode = 2
+toggle_mode = true
+text = "↖"
+
+[node name="North" type="Button" parent="."]
+layout_mode = 2
+toggle_mode = true
+text = " ↑ "
+
+[node name="Northeast" type="Button" parent="."]
+layout_mode = 2
+toggle_mode = true
+text = "↗"
+
+[node name="West" type="Button" parent="."]
+layout_mode = 2
+toggle_mode = true
+text = "←"
+
+[node name="Center" type="Control" parent="."]
+layout_mode = 2
+
+[node name="East" type="Button" parent="."]
+layout_mode = 2
+toggle_mode = true
+text = "→"
+
+[node name="Southwest" type="Button" parent="."]
+layout_mode = 2
+toggle_mode = true
+text = "↙"
+
+[node name="South" type="Button" parent="."]
+layout_mode = 2
+toggle_mode = true
+text = " ↓ "
+
+[node name="Southeast" type="Button" parent="."]
+layout_mode = 2
+toggle_mode = true
+text = "↘"
+
+[connection signal="toggled" from="Northwest" to="." method="_on_northwest_toggled"]
+[connection signal="toggled" from="North" to="." method="_on_north_toggled"]
+[connection signal="toggled" from="Northeast" to="." method="_on_northeast_toggled"]
+[connection signal="toggled" from="West" to="." method="_on_west_toggled"]
+[connection signal="toggled" from="East" to="." method="_on_east_toggled"]
+[connection signal="toggled" from="Southwest" to="." method="_on_southwest_toggled"]
+[connection signal="toggled" from="South" to="." method="_on_south_toggled"]
+[connection signal="toggled" from="Southeast" to="." method="_on_southeast_toggled"]

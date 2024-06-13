@@ -1,0 +1,151 @@
+[gd_scene load_steps=5 format=3 uid="uid://besghlgfdt1w1"]
+
+[ext_resource type="Theme" uid="uid://cr2frn8ee7dhi" path="res://themes/default.tres" id="1_burbw"]
+[ext_resource type="Script" path="res://scripts/ruleset_creator.gd" id="1_uvuvm"]
+[ext_resource type="PackedScene" uid="uid://dldic4ix1v6dq" path="res://scenes/cell_editor.tscn" id="2_hnosh"]
+[ext_resource type="PackedScene" uid="uid://drdiu2t881jyt" path="res://scenes/rule_editor.tscn" id="2_k62k2"]
+
+[node name="RulesetCreator" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_uvuvm")
+cell_editor_scene = ExtResource("2_hnosh")
+rule_editor_scene = ExtResource("2_k62k2")
+
+[node name="Background" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_right = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_burbw")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Background"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Toolbar" type="HBoxContainer" parent="Background/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.1
+metadata/_edit_use_anchors_ = true
+
+[node name="BackButton" type="Button" parent="Background/VBoxContainer/Toolbar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "  ↩  "
+
+[node name="RulesetSelector" type="OptionButton" parent="Background/VBoxContainer/Toolbar"]
+layout_mode = 2
+size_flags_horizontal = 3
+item_count = 2
+selected = 0
+popup/item_0/text = "Select Ruleset..."
+popup/item_0/id = 0
+popup/item_1/text = ""
+popup/item_1/id = 1
+popup/item_1/separator = true
+
+[node name="RulesetName" type="LineEdit" parent="Background/VBoxContainer/Toolbar"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.25
+
+[node name="NewButton" type="Button" parent="Background/VBoxContainer/Toolbar"]
+layout_mode = 2
+text = " New "
+
+[node name="SaveButton" type="Button" parent="Background/VBoxContainer/Toolbar"]
+layout_mode = 2
+text = " Save "
+metadata/_edit_use_anchors_ = true
+
+[node name="DeleteButton" type="Button" parent="Background/VBoxContainer/Toolbar"]
+layout_mode = 2
+text = " Delete "
+
+[node name="Data" type="HBoxContainer" parent="Background/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CellPanel" type="PanelContainer" parent="Background/VBoxContainer/Data"]
+layout_mode = 2
+size_flags_horizontal = 3
+metadata/_edit_use_anchors_ = true
+
+[node name="Margins" type="MarginContainer" parent="Background/VBoxContainer/Data/CellPanel"]
+layout_mode = 2
+
+[node name="CellContainer" type="VBoxContainer" parent="Background/VBoxContainer/Data/CellPanel/Margins"]
+layout_mode = 2
+
+[node name="Toolbar" type="HBoxContainer" parent="Background/VBoxContainer/Data/CellPanel/Margins/CellContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.1
+alignment = 1
+
+[node name="AddCellButton" type="Button" parent="Background/VBoxContainer/Data/CellPanel/Margins/CellContainer/Toolbar"]
+layout_mode = 2
+size_flags_horizontal = 3
+disabled = true
+text = "Add Cell"
+
+[node name="Scroll" type="ScrollContainer" parent="Background/VBoxContainer/Data/CellPanel/Margins/CellContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Cells" type="VBoxContainer" parent="Background/VBoxContainer/Data/CellPanel/Margins/CellContainer/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="RulePanel" type="PanelContainer" parent="Background/VBoxContainer/Data"]
+layout_mode = 2
+size_flags_horizontal = 3
+metadata/_edit_use_anchors_ = true
+
+[node name="Margins" type="MarginContainer" parent="Background/VBoxContainer/Data/RulePanel"]
+layout_mode = 2
+
+[node name="RuleContainer" type="VBoxContainer" parent="Background/VBoxContainer/Data/RulePanel/Margins"]
+layout_mode = 2
+
+[node name="AddRuleButton" type="Button" parent="Background/VBoxContainer/Data/RulePanel/Margins/RuleContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.1
+disabled = true
+text = "Add Rule..."
+
+[node name="Scroll" type="ScrollContainer" parent="Background/VBoxContainer/Data/RulePanel/Margins/RuleContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Rules" type="VBoxContainer" parent="Background/VBoxContainer/Data/RulePanel/Margins/RuleContainer/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[connection signal="pressed" from="Background/VBoxContainer/Toolbar/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="item_selected" from="Background/VBoxContainer/Toolbar/RulesetSelector" to="." method="_on_ruleset_selector_item_selected"]
+[connection signal="pressed" from="Background/VBoxContainer/Toolbar/NewButton" to="." method="_on_new_button_pressed"]
+[connection signal="pressed" from="Background/VBoxContainer/Toolbar/SaveButton" to="." method="_on_save_button_pressed"]
+[connection signal="pressed" from="Background/VBoxContainer/Toolbar/DeleteButton" to="." method="_on_delete_button_pressed"]
+[connection signal="pressed" from="Background/VBoxContainer/Data/CellPanel/Margins/CellContainer/Toolbar/AddCellButton" to="." method="_on_add_cell_button_pressed"]
+[connection signal="pressed" from="Background/VBoxContainer/Data/RulePanel/Margins/RuleContainer/AddRuleButton" to="." method="_on_add_rule_button_pressed"]

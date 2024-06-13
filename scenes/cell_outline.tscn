@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://dqyjdt5qki1kb"]
+
+[ext_resource type="Texture2D" uid="uid://b51uv3r3fx14t" path="res://sprites/grid.png" id="1_q73ax"]
+
+[node name="CellOutline" type="TextureRect"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+texture = ExtResource("1_q73ax")
+expand_mode = 1

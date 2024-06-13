@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="Ruleset" load_steps=2 format=3 uid="uid://eu2wylckls6"]
+
+[ext_resource type="Script" path="res://resources/ruleset.gd" id="1_8e3w2"]
+
+[resource]
+script = ExtResource("1_8e3w2")
+cells = Array[Resource("res://resources/cell_type.gd")]([])
+rules = Array[Resource("res://resources/rule.gd")]([])

@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="CellType" load_steps=2 format=3 uid="uid://drdwb44syw65p"]
+
+[ext_resource type="Script" path="res://resources/cell_type.gd" id="1_427fd"]
+
+[resource]
+script = ExtResource("1_427fd")
+name = "Blank"
+color = Color(1, 1, 1, 1)
+states = {}

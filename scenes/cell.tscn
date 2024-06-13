@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=3 uid="uid://b5v618ff5eut3"]
+
+[ext_resource type="Texture2D" uid="uid://c68a6k16yw0ik" path="res://sprites/blank.png" id="1_lapy7"]
+[ext_resource type="Script" path="res://scripts/cell.gd" id="1_ukqhg"]
+
+[node name="Cell" type="TextureButton"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture_normal = ExtResource("1_lapy7")
+texture_pressed = ExtResource("1_lapy7")
+texture_hover = ExtResource("1_lapy7")
+texture_disabled = ExtResource("1_lapy7")
+texture_focused = ExtResource("1_lapy7")
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("1_ukqhg")
+
+[connection signal="button_down" from="." to="." method="_on_button_down"]
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]

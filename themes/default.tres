@@ -1,0 +1,14 @@
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://cr2frn8ee7dhi"]
+
+[ext_resource type="FontFile" uid="uid://pv4qdoghcqny" path="res://themes/NotoSans-VariableFont_wdth,wght.ttf" id="1_tw5k0"]
+[ext_resource type="StyleBox" uid="uid://irrlvi0eefj3" path="res://styles/separator.tres" id="2_21rit"]
+
+[resource]
+default_font = ExtResource("1_tw5k0")
+default_font_size = 30
+BoxContainer/constants/separation = 10
+MarginContainer/constants/margin_bottom = 10
+MarginContainer/constants/margin_left = 10
+MarginContainer/constants/margin_right = 10
+MarginContainer/constants/margin_top = 10
+PopupMenu/styles/separator = ExtResource("2_21rit")
