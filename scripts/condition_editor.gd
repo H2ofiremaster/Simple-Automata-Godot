@@ -16,8 +16,13 @@ func initialize(init_ruleset: Ruleset, init_condition: Condition) -> void:
 	ruleset = init_ruleset;
 	condition = init_condition;
 	
-	if condition.pattern == null:
-		condition.pattern = Pattern.new();
+	#if condition.pattern == null:
+		#condition.pattern = Pattern.new();
+	
+	if condition.type == Condition.ConditionType.NUMERIC:
+		_on_numeric_button_pressed();
+	if condition.type == Condition.ConditionType.DIRECTIONAL:
+		_on_directional_button_pressed();
 	
 	pattern_input.initialize(ruleset, condition.pattern);
 	number_input.initialize();
@@ -25,7 +30,6 @@ func initialize(init_ruleset: Ruleset, init_condition: Condition) -> void:
 
 
 func _on_numeric_button_pressed() -> void:
-	if condition.type == Condition.ConditionType.NUMERIC: return;
 	numeric_button.button_pressed = true;
 	directional_button.button_pressed = false;
 	condition.type = Condition.ConditionType.NUMERIC;
@@ -34,7 +38,6 @@ func _on_numeric_button_pressed() -> void:
 
 
 func _on_directional_button_pressed() -> void:
-	if condition.type == Condition.ConditionType.DIRECTIONAL: return;
 	directional_button.button_pressed = true;
 	numeric_button.button_pressed = false;
 	condition.type = Condition.ConditionType.DIRECTIONAL;

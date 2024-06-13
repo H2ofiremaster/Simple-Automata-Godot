@@ -21,6 +21,9 @@ func _matches_absolute(cell: Cell, ruleset: Ruleset) -> bool:
 	var name_matches := not cell_name or cell.type.name == cell_name;
 	var state_matches := not cell_state;
 	for key: String in cell_state.keys():
+		if not cell.state.has(key):
+			state_matches = false;
+			break;
 		var current_value: String = cell.state[key];
 		var target_value: String = cell_state[key];
 		if not current_value:

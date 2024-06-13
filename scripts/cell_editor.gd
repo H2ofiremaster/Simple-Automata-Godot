@@ -22,7 +22,7 @@ func initialize(init_ruleset: Ruleset, init_type: CellType) -> void:
 	preview.modulate = type.color;
 	name_input.text = type.name;
 	
-	var state_names: Array[String];
+	var state_names: Array[String] = [];
 	state_names.assign(type.states.keys());
 	for state_name: String in state_names:
 		state_select.add_item(state_name);
@@ -100,5 +100,4 @@ func _on_remove_button_pressed() -> void:
 
 
 func _on_delete_button_pressed() -> void:
-	print("aa");
 	delete_requested.emit(self);

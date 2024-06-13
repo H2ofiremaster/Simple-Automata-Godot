@@ -49,12 +49,12 @@ vertical_alignment = 1
 layout_mode = 2
 
 [node name="StartButton" type="Button" parent="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/PlaybackButtons"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Start"
 
 [node name="StopButton" type="Button" parent="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/PlaybackButtons"]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Stop
@@ -68,20 +68,19 @@ text = "Step"
 [node name="SpeedControl" type="HBoxContainer" parent="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer"]
 layout_mode = 2
 
-[node name="SpeedSlider" type="HSlider" parent="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/SpeedControl"]
+[node name="HSlider" type="HSlider" parent="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/SpeedControl"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 min_value = 0.01
 max_value = 1.0
 step = 0.01
-value = 1.0
+value = 0.01
 
-[node name="SpeedEdit" type="LineEdit" parent="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/SpeedControl"]
+[node name="LineEdit" type="LineEdit" parent="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/SpeedControl"]
 layout_mode = 2
 size_flags_horizontal = 8
 theme_override_constants/minimum_character_width = 4
-text = "1"
 
 [node name="GridSizeContainer" type="VBoxContainer" parent="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer"]
 layout_mode = 2
@@ -163,13 +162,8 @@ theme_override_constants/h_separation = 10
 theme_override_constants/v_separation = 10
 columns = 3
 
-[connection signal="pressed" from="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/PlaybackButtons/StartButton" to="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer" method="_on_start_button_pressed"]
-[connection signal="pressed" from="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/PlaybackButtons/StopButton" to="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer" method="_on_stop_button_pressed"]
 [connection signal="pressed" from="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/PlaybackButtons/StepButton" to="." method="_on_step_button_pressed"]
 [connection signal="pressed" from="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/PlaybackButtons/StepButton" to="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer" method="_on_step_button_pressed"]
-[connection signal="drag_ended" from="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/SpeedControl/SpeedSlider" to="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer" method="_on_speed_slider_drag_ended"]
-[connection signal="value_changed" from="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/SpeedControl/SpeedSlider" to="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer" method="_on_speed_slider_value_changed"]
-[connection signal="text_submitted" from="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/SpeedControl/SpeedEdit" to="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer" method="_on_speed_edit_text_submitted"]
 [connection signal="text_submitted" from="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/GridSizeContainer/GridSizeEdit" to="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer" method="_on_grid_size_edit_text_submitted"]
 [connection signal="cell_state_updated" from="GridContainer/GridAspect/Grid" to="GridContainer/CellLabel" method="_on_grid_cell_state_updated"]
 [connection signal="cell_type_updated" from="GridContainer/GridAspect/Grid" to="GridContainer/CellLabel" method="_on_grid_cell_type_updated"]

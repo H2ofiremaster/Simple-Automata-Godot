@@ -168,7 +168,6 @@ columns = 3
 [connection signal="pressed" from="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/PlaybackButtons/StepButton" to="." method="_on_step_button_pressed"]
 [connection signal="pressed" from="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/PlaybackButtons/StepButton" to="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer" method="_on_step_button_pressed"]
 [connection signal="drag_ended" from="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/SpeedControl/SpeedSlider" to="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer" method="_on_speed_slider_drag_ended"]
-[connection signal="value_changed" from="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/SpeedControl/SpeedSlider" to="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer" method="_on_speed_slider_value_changed"]
 [connection signal="text_submitted" from="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/SpeedControl/SpeedEdit" to="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer" method="_on_speed_edit_text_submitted"]
 [connection signal="text_submitted" from="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/GridSizeContainer/GridSizeEdit" to="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer" method="_on_grid_size_edit_text_submitted"]
 [connection signal="cell_state_updated" from="GridContainer/GridAspect/Grid" to="GridContainer/CellLabel" method="_on_grid_cell_state_updated"]

@@ -87,6 +87,7 @@ func _on_state_edit_text_submitted(new_text: String) -> void:
 	else:
 		error_label.visible = true;
 		error_label.text = ERROR_LABEL_MESSAGE + error;
+	state_edit.release_focus()
 
 
 func _on_name_select_item_selected(index: int) -> void:

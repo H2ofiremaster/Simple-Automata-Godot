@@ -11,6 +11,7 @@
 [node name="RuleEditor" type="PanelContainer"]
 offset_right = 580.0
 offset_bottom = 170.0
+size_flags_horizontal = 3
 script = ExtResource("1_eflva")
 ruleset = ExtResource("2_vh0im")
 condition_editor_scene = ExtResource("3_3fiha")
@@ -35,6 +36,7 @@ text = " - "
 
 [node name="MainContainer" type="VBoxContainer" parent="Margins/SurroundingContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="Definition" type="HBoxContainer" parent="Margins/SurroundingContainer/MainContainer"]
 layout_mode = 2
@@ -63,12 +65,38 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="AddContainer" type="VBoxContainer" parent="Margins/SurroundingContainer/MainContainer/Conditions/ConditionContainer"]
+[node name="AddContainer" type="HBoxContainer" parent="Margins/SurroundingContainer/MainContainer/Conditions/ConditionContainer"]
 layout_mode = 2
 
 [node name="AddConditionButton" type="Button" parent="Margins/SurroundingContainer/MainContainer/Conditions/ConditionContainer/AddContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
 text = "Add Condition..."
+
+[node name="CollapseButton" type="Button" parent="Margins/SurroundingContainer/MainContainer/Conditions/ConditionContainer/AddContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.1
+toggle_mode = true
+text = "^"
+
+[node name="Conditions" type="VBoxContainer" parent="Margins/SurroundingContainer/MainContainer/Conditions/ConditionContainer"]
+layout_mode = 2
+
+[node name="PositionContainer" type="VBoxContainer" parent="Margins/SurroundingContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="MoveUpButton" type="Button" parent="Margins/SurroundingContainer/PositionContainer"]
+layout_mode = 2
+text = " ^ "
+
+[node name="MoveDownButton" type="Button" parent="Margins/SurroundingContainer/PositionContainer"]
+layout_mode = 2
+text = " v "
 
 [connection signal="pressed" from="Margins/SurroundingContainer/DeleteButton" to="." method="_on_delete_button_pressed"]
 [connection signal="pressed" from="Margins/SurroundingContainer/MainContainer/Conditions/ConditionContainer/AddContainer/AddConditionButton" to="." method="_on_add_condition_button_pressed"]
+[connection signal="toggled" from="Margins/SurroundingContainer/MainContainer/Conditions/ConditionContainer/AddContainer/CollapseButton" to="." method="_on_collapse_button_toggled"]
+[connection signal="pressed" from="Margins/SurroundingContainer/PositionContainer/MoveUpButton" to="." method="_on_move_up_button_pressed"]
+[connection signal="pressed" from="Margins/SurroundingContainer/PositionContainer/MoveDownButton" to="." method="_on_move_down_button_pressed"]

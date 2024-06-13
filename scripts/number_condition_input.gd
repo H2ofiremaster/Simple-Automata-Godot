@@ -10,12 +10,14 @@ const VALID_CHARS: Array[String] = ["0", "1", "2", "3", "4", "5", "6", "7", "8"]
 func initialize() -> void:
 	self.text = editor.condition.display;
 
-func _strip_text(text: String) -> String:
+
+func _strip_text(string: String) -> String:
 	var new_text := "";
-	for character in text:
+	for character in string:
 		if VALID_CHARS.has(character):
 			new_text += character;
 	return new_text;
+
 
 func _handle_array(new_text: String) -> bool:
 	var array: Array[int] = [];
@@ -36,6 +38,7 @@ func _handle_array(new_text: String) -> bool:
 	editor.number_input.text = number_format;
 	return true;
 
+
 func _handle_upper_bound(new_text: String, delimiter: String) -> bool:
 	var stripped_text := _strip_text(new_text);
 	if stripped_text.length() != 1: return false;
@@ -48,7 +51,8 @@ func _handle_upper_bound(new_text: String, delimiter: String) -> bool:
 	
 	_update_values(numbers, number_format);
 	return true;
-	
+
+
 func _handle_lower_bound(new_text: String, delimiter: String) -> bool:
 	var stripped_text := _strip_text(new_text);
 	if stripped_text.length() != 1: return false;
@@ -61,6 +65,7 @@ func _handle_lower_bound(new_text: String, delimiter: String) -> bool:
 	
 	_update_values(numbers, number_format);
 	return true;
+
 
 func _handle_range(new_text: String, delimiter: String) -> bool:
 	var sides := new_text.split("to");
@@ -80,6 +85,7 @@ func _handle_range(new_text: String, delimiter: String) -> bool:
 	_update_values(numbers, number_format);
 	return true;
 	
+
 
 func _update_values(numbers: Array[int], number_format: String) -> void:
 	editor.condition.counts = numbers;

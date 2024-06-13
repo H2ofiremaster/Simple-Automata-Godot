@@ -1,7 +1,7 @@
 class_name Cell extends TextureButton
 
 signal hovered_cell_updated(cell: Cell);
-signal updated(cell: Cell, type_updated: bool, state_updated: bool);
+signal updated(cell: Cell, type_updated: bool);
 
 const CELL = preload("res://scenes/cell.tscn")
 
@@ -9,6 +9,7 @@ var type: CellType:
 	set(value):
 		self.modulate = value.color;
 		type = value;
+		update_state();
 var state: Dictionary;
 var grid: Grid;
 var selected_state_index: int = 0;
@@ -29,6 +30,7 @@ func _to_string() -> String:
 	return "Cell(%s%s)" % [type, state]
 
 func cycle_selected_state(amount: int) -> void:
+	if state.is_empty(): return;
 	var selected_key: String = state.keys()[selected_state_index];
 	if !selected_key: return;
 	var current_value: String = state[selected_key];
@@ -46,13 +48,20 @@ func clone() -> Cell:
 	cell.grid = self.grid;
 	return cell;
 
+func update_state() -> void:
+	var new_state := type.default_state();
+	for key: String in state.keys():
+		if new_state.has(key):
+			print("setting '%s' to %s" % [key, state[key]])
+			new_state[key] = state[key];
+	state = new_state;
 func _on_mouse_entered() -> void:
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		self.type = grid.selected_cell_type;
-		updated.emit(self);
+		updated.emit(self, true);
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
 		self.type = grid.ruleset.default_type()
-		updated.emit(self);
+		updated.emit(self, true);
 	hovered_cell_updated.emit(self);
 
 
@@ -64,21 +73,21 @@ func _on_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			self.type = grid.selected_cell_type;
-			updated.emit(self, true, false);
+			updated.emit(self, true);
 		if event.button_index == MOUSE_BUTTON_RIGHT:
 			self.type = grid.ruleset.default_type();
-			updated.emit(self, true, false);
+			updated.emit(self, true);
 		if event.button_index == MOUSE_BUTTON_MIDDLE:
 			self.selected_state_index += 1;
 			if self.selected_state_index >= self.state.keys().size():
 				self.selected_state_index = 0;
-			updated.emit(self, false, true);
+			updated.emit(self, false);
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			cycle_selected_state(1);
-			updated.emit(self, false, true);
+			updated.emit(self, false);
 		if event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			cycle_selected_state(-1);
-			updated.emit(self, false, true);
+			updated.emit(self, false);
 
 
 

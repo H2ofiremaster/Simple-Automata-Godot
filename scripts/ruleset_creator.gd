@@ -45,13 +45,25 @@ func save() -> void:
 		printerr(error);
 
 
+func disable_rule_move_buttons() -> void:
+	var i: int = 0;
+	for editor: RuleEditor in rules.get_children():
+		editor.move_up_button.disabled = false;
+		editor.move_down_button.disabled = false;
+		if i == 0:
+			editor.move_up_button.disabled = true;
+		if i == rules.get_child_count() - 1:
+			editor.move_down_button.disabled = true;
+		i += 1;
+
+
 func _on_new_button_pressed() -> void:
 	var ruleset_name_text := ruleset_name.text;
 	if ruleset_name_text.is_empty(): 
 		print("Name is empty; returning")
 		return;
 	selected_ruleset = ruleset_resource.duplicate();
-	selected_ruleset.name = name;
+	selected_ruleset.name = ruleset_name_text;
 	rulesets.append(selected_ruleset);
 	ruleset_selector.add_item(selected_ruleset.name);
 	var last_item := ruleset_selector.item_count - 1;
@@ -90,7 +102,9 @@ func _on_ruleset_selector_item_selected(index: int) -> void:
 		var editor: RuleEditor = rule_editor_scene.instantiate();
 		rules.add_child(editor);
 		editor.delete_requested.connect(_on_rule_delete_requested);
+		editor.move_requested.connect(_on_rule_move_requested);
 		editor.initialize(selected_ruleset, rule);
+	disable_rule_move_buttons()
 
 
 func _on_add_rule_button_pressed() -> void:
@@ -99,9 +113,33 @@ func _on_add_rule_button_pressed() -> void:
 	selected_ruleset.rules.append(rule);
 	rules.add_child(editor);
 	editor.delete_requested.connect(_on_rule_delete_requested);
+	editor.move_requested.connect(_on_rule_move_requested);
 	editor.initialize(selected_ruleset, rule);
-	
+	disable_rule_move_buttons()
 
+
+func _on_rule_delete_requested(to_delete: RuleEditor) -> void:
+	var index := selected_ruleset.rules.find(to_delete.rule);
+	if index != -1:
+		selected_ruleset.rules.remove_at(index);
+	to_delete.queue_free();
+
+func _on_rule_move_requested(mover: RuleEditor, up: bool) -> void:
+	var original_index := selected_ruleset.rules.find(mover.rule);
+	var new_index := original_index - 1 if up else original_index + 1;
+	
+	print("%s | %s" % [original_index, new_index])
+	
+	if new_index < 0 or new_index >= selected_ruleset.rules.size():
+		return;
+	
+	var item_b := selected_ruleset.rules[new_index];
+	selected_ruleset.rules[new_index] = selected_ruleset.rules[original_index];
+	selected_ruleset.rules[original_index] = item_b;
+	
+	rules.move_child(rules.get_child(original_index), new_index);
+	
+	disable_rule_move_buttons();
 
 func _on_add_cell_button_pressed() -> void:
 	var editor: CellEditor = cell_editor_scene.instantiate();
@@ -117,14 +155,6 @@ func _on_cell_delete_requested(to_delete: CellEditor) -> void:
 	var index := selected_ruleset.cells.find(to_delete.type);
 	if index != -1:
 		selected_ruleset.cells.remove_at(index);
-	to_delete.queue_free();
-
-
-func _on_rule_delete_requested(to_delete: RuleEditor) -> void:
-	print("b");
-	var index := selected_ruleset.rules.find(to_delete.rule);
-	if index != -1:
-		selected_ruleset.rules.remove_at(index);
 	to_delete.queue_free();
 
 
@@ -148,6 +178,7 @@ func _on_back_button_pressed() -> void:
 	self.hide();
 	game_board.show();
 	ruleset_changed.emit(selected_ruleset);
+
 
 func _on_cell_name_updated() -> void:
 	for editor: RuleEditor in rules.get_children():

@@ -41,7 +41,8 @@ func next_generation() -> void:
 	for i in new_cells.size():
 		var cell: Cell = cells[i].clone();
 		for rule in ruleset.rules:
-			rule.transform(cell, get_neighbors(i), ruleset);
+			if rule.transform(cell, get_neighbors(i), ruleset):
+				break;
 		new_cells[i] = cell;
 	cells = new_cells
 	#print(cells)
@@ -96,8 +97,8 @@ func _on_hovered_cell_updated(cell: Cell) -> void:
 	cell_type_updated.emit(cell);
 
 
-func _on_cell_updated(cell: Cell, type_updated: bool, state_updated: bool) -> void:
+func _on_cell_updated(cell: Cell, type_updated: bool) -> void:
 	if type_updated: cell_type_updated.emit(cell);
-	if state_updated: cell_state_updated.emit(cell);
+	else: cell_state_updated.emit(cell);
 
 
