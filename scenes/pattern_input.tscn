@@ -21,10 +21,11 @@ alignment = 1
 [node name="StatusBar" type="HBoxContainer" parent="Margins/Container"]
 layout_mode = 2
 
-[node name="NotLabel" type="Label" parent="Margins/Container/StatusBar"]
-visible = false
+[node name="NotButton" type="Button" parent="Margins/Container/StatusBar"]
+modulate = Color(0.662745, 0.662745, 0.662745, 1)
 layout_mode = 2
-text = "Not "
+toggle_mode = true
+text = "   "
 
 [node name="NameSelect" type="OptionButton" parent="Margins/Container/StatusBar"]
 layout_mode = 2
@@ -38,27 +39,12 @@ popup/item_1/text = ""
 popup/item_1/id = 1
 popup/item_1/separator = true
 
-[node name="ExpandButton" type="Button" parent="Margins/Container/StatusBar"]
-layout_mode = 2
-toggle_mode = true
-text = " v "
-
-[node name="LabelContainer" type="HBoxContainer" parent="Margins/Container"]
-layout_mode = 2
-alignment = 1
-
-[node name="InvertToggle" type="CheckBox" parent="Margins/Container/LabelContainer"]
+[node name="LeftBracket" type="Label" parent="Margins/Container/StatusBar"]
 visible = false
 layout_mode = 2
-text = "↷"
+text = "["
 
-[node name="StateLabel" type="Label" parent="Margins/Container/LabelContainer"]
-visible = false
-layout_mode = 2
-text = "With states:"
-horizontal_alignment = 1
-
-[node name="StateEdit" type="LineEdit" parent="Margins/Container"]
+[node name="StateEdit" type="LineEdit" parent="Margins/Container/StatusBar"]
 visible = false
 layout_mode = 2
 size_flags_vertical = 3
@@ -66,13 +52,19 @@ placeholder_text = "state_1 = value_1,
 state_2 = value_2, 
 ..."
 
+[node name="ExpandButton" type="Button" parent="Margins/Container/StatusBar"]
+layout_mode = 2
+toggle_mode = true
+text = "[ . . . ]"
+
 [node name="ErrorLabel" type="Label" parent="Margins/Container"]
 visible = false
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0, 0, 1)
 text = "Invalid state definition: "
+horizontal_alignment = 2
 
+[connection signal="toggled" from="Margins/Container/StatusBar/NotButton" to="." method="_on_not_button_toggled"]
 [connection signal="item_selected" from="Margins/Container/StatusBar/NameSelect" to="." method="_on_name_select_item_selected"]
+[connection signal="text_submitted" from="Margins/Container/StatusBar/StateEdit" to="." method="_on_state_edit_text_submitted"]
 [connection signal="toggled" from="Margins/Container/StatusBar/ExpandButton" to="." method="_on_expand_button_toggled"]
-[connection signal="toggled" from="Margins/Container/LabelContainer/InvertToggle" to="." method="_on_invert_toggle_toggled"]
-[connection signal="text_submitted" from="Margins/Container/StateEdit" to="." method="_on_state_edit_text_submitted"]
