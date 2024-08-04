@@ -19,19 +19,20 @@ func _matches_absolute(cell: Cell, ruleset: Ruleset) -> bool:
 	if not cell:
 		return false;
 	var name_matches := not cell_name or cell.type.name == cell_name;
-	var state_matches := not cell_state;
-	for key: String in cell_state.keys():
-		if not cell.state.has(key):
-			state_matches = false;
-			break;
-		var current_value: String = cell.state[key];
-		var target_value: String = cell_state[key];
-		if not current_value:
-			state_matches = false;
-			break;
-		if not current_value == target_value:
-			state_matches = false;
-			break
+	var state_matches := true;
+	if cell_state:
+		for key: String in cell_state.keys():
+			if not cell.state.has(key):
+				state_matches = false;
+				break;
+			var current_value: String = cell.state[key];
+			var target_value: String = cell_state[key];
+			if not current_value or not target_value:
+				state_matches = false;
+				break;
+			if not current_value == target_value:
+				state_matches = false;
+				break
 	return name_matches and state_matches;
 
 ## Validates a given state string.

@@ -48,10 +48,6 @@ layout_mode = 2
 [node name="InnerContainer" type="HBoxContainer" parent="Margins/OuterContainer/InnerPanel/InnerMargins"]
 layout_mode = 2
 
-[node name="IfLabel" type="Label" parent="Margins/OuterContainer/InnerPanel/InnerMargins/InnerContainer"]
-layout_mode = 2
-text = "If "
-
 [node name="NumberInput" parent="Margins/OuterContainer/InnerPanel/InnerMargins/InnerContainer" node_paths=PackedStringArray("editor") instance=ExtResource("5_qkj2s")]
 layout_mode = 2
 editor = NodePath("../../../../../..")
@@ -64,7 +60,8 @@ editor = NodePath("../../../../../..")
 
 [node name="NeighborsLabel" type="Label" parent="Margins/OuterContainer/InnerPanel/InnerMargins/InnerContainer"]
 layout_mode = 2
-text = " neighbors are "
+theme_override_font_sizes/font_size = 50
+text = " ="
 
 [node name="PatternInput" parent="Margins/OuterContainer/InnerPanel/InnerMargins/InnerContainer" instance=ExtResource("6_m5yiq")]
 layout_mode = 2

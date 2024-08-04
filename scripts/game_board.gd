@@ -11,7 +11,7 @@ const BLANK_RULESET = preload("res://resources/blank_ruleset.tres")
 
 func _ready() -> void:
 	await get_tree().create_timer(0.1).timeout;
-	grid.initialize(BLANK_RULESET);
+	grid.initialize(BLANK_RULESET, self);
 	_on_ruleset_creator_ruleset_changed(BLANK_RULESET);
 	
 

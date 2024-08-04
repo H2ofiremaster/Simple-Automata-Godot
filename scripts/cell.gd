@@ -71,23 +71,24 @@ func _on_mouse_exited() -> void:
 
 func _on_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed:
-		if event.button_index == MOUSE_BUTTON_LEFT:
-			self.type = grid.selected_cell_type;
-			updated.emit(self, true);
-		if event.button_index == MOUSE_BUTTON_RIGHT:
-			self.type = grid.ruleset.default_type();
-			updated.emit(self, true);
-		if event.button_index == MOUSE_BUTTON_MIDDLE:
-			self.selected_state_index += 1;
-			if self.selected_state_index >= self.state.keys().size():
-				self.selected_state_index = 0;
-			updated.emit(self, false);
-		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
-			cycle_selected_state(1);
-			updated.emit(self, false);
-		if event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-			cycle_selected_state(-1);
-			updated.emit(self, false);
+		match event.button_index:
+			MOUSE_BUTTON_LEFT:
+				self.type = grid.selected_cell_type;
+				updated.emit(self, true);
+			MOUSE_BUTTON_RIGHT:
+				self.type = grid.ruleset.default_type();
+				updated.emit(self, true);
+			MOUSE_BUTTON_MIDDLE:
+				self.selected_state_index += 1;
+				if self.selected_state_index >= self.state.keys().size():
+					self.selected_state_index = 0;
+				updated.emit(self, false);
+			MOUSE_BUTTON_WHEEL_UP:
+				cycle_selected_state(1);
+				updated.emit(self, false);
+			MOUSE_BUTTON_WHEEL_DOWN:
+				cycle_selected_state(-1);
+				updated.emit(self, false);
 
 
 

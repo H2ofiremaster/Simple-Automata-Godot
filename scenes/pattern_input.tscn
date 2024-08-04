@@ -29,7 +29,6 @@ text = "   "
 
 [node name="NameSelect" type="OptionButton" parent="Margins/Container/StatusBar"]
 layout_mode = 2
-size_flags_horizontal = 3
 item_count = 2
 selected = 0
 fit_to_longest_item = false
@@ -47,10 +46,12 @@ text = "["
 [node name="StateEdit" type="LineEdit" parent="Margins/Container/StatusBar"]
 visible = false
 layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
-placeholder_text = "state_1 = value_1, 
-state_2 = value_2, 
+placeholder_text = "a = 1, 
+b = 2, 
 ..."
+expand_to_text_length = true
 
 [node name="ExpandButton" type="Button" parent="Margins/Container/StatusBar"]
 layout_mode = 2

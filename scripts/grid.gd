@@ -11,9 +11,11 @@ const CELL_OUTLINE = preload("res://scenes/cell_outline.tscn")
 var cells: Array[Cell];
 var selected_cell_type: CellType;
 var ruleset: Ruleset;
+var game_board: GameBoard;
 
-func initialize(init_ruleset: Ruleset) -> void:
+func initialize(init_ruleset: Ruleset, init_game_board: GameBoard) -> void:
 	self.ruleset = init_ruleset;
+	self.game_board = init_game_board;
 	self.selected_cell_type = ruleset.default_type();
 	generate();
 
@@ -29,35 +31,36 @@ func add_line(point1: Vector2, point2: Vector2) -> void:
 	self.add_child(line);
 
 
-	
 func fill_default() -> void:
 	for i in cells.size():
 		cells[i] = Cell.default(self);
 	refresh();
 
 func next_generation() -> void:
+	var cell_count := cells.size();
 	var new_cells: Array[Cell] = [];
-	new_cells.resize(cells.size());
-	for i in new_cells.size():
+	new_cells.resize(cell_count);
+	for i in range(cell_count):
 		var cell: Cell = cells[i].clone();
+		#print("---")
+		#print("Transforming: %s" % cell)
 		for rule in ruleset.rules:
 			if rule.transform(cell, get_neighbors(i), ruleset):
 				break;
 		new_cells[i] = cell;
 	cells = new_cells
-	#print(cells)
 	refresh();
 
 func get_neighbors(index: int) -> Array[Cell]:
 	var neighbors: Array[Cell] = [];
-	neighbors.append(get_neighbor(index, -1, -1));
-	neighbors.append(get_neighbor(index, -1, 0));
-	neighbors.append(get_neighbor(index, -1, 1));
-	neighbors.append(get_neighbor(index, 0, -1));
-	neighbors.append(get_neighbor(index, 0, 1));
-	neighbors.append(get_neighbor(index, 1, -1));
-	neighbors.append(get_neighbor(index, 1, 0));
-	neighbors.append(get_neighbor(index, 1, 1));
+	neighbors.append(get_neighbor(index, -1, 1)); # Northeast
+	neighbors.append(get_neighbor(index, -1, 0)); # North
+	neighbors.append(get_neighbor(index, -1, -1)); # Northwest
+	neighbors.append(get_neighbor(index, 0, 1)); # East
+	neighbors.append(get_neighbor(index, 0, -1)); # West
+	neighbors.append(get_neighbor(index, 1, 1)); # Southeast
+	neighbors.append(get_neighbor(index, 1, 0)); # South
+	neighbors.append(get_neighbor(index, 1, -1)); # Southwest
 	return neighbors;
 
 func get_neighbor(index: int, y_offset: int, x_offset: int) -> Cell:

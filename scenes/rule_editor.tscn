@@ -43,7 +43,6 @@ layout_mode = 2
 
 [node name="InputPattern" parent="Margins/SurroundingContainer/MainContainer/Definition" instance=ExtResource("1_b5gl5")]
 layout_mode = 2
-size_flags_horizontal = 3
 default_text = "Anything"
 can_invert = true
 
@@ -54,7 +53,6 @@ text = " => "
 
 [node name="OutputPattern" parent="Margins/SurroundingContainer/MainContainer/Definition" instance=ExtResource("1_b5gl5")]
 layout_mode = 2
-size_flags_horizontal = 3
 default_text = "Itself"
 
 [node name="Conditions" type="PanelContainer" parent="Margins/SurroundingContainer/MainContainer"]
