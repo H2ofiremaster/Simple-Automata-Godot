@@ -57,7 +57,7 @@ func _on_condition_delete_requested(to_delete: ConditionEditor) -> void:
 
 
 func _on_delete_button_pressed() -> void:
-	print("bb");
+	# print("bb");
 	delete_requested.emit(self);
 
 

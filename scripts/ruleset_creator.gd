@@ -34,7 +34,7 @@ func _ready() -> void:
 		var resource := ResourceLoader.load(RULESET_PATH + path, "Ruleset");
 		rulesets.append(resource);
 	for ruleset in rulesets:
-		print(ruleset);
+		# print(ruleset);
 		ruleset_selector.add_item(ruleset.name);
 
 
@@ -60,7 +60,7 @@ func disable_rule_move_buttons() -> void:
 func _on_new_button_pressed() -> void:
 	var ruleset_name_text := ruleset_name.text;
 	if ruleset_name_text.is_empty(): 
-		print("Name is empty; returning")
+		printerr("Name is empty; returning")
 		return;
 	selected_ruleset = ruleset_resource.duplicate();
 	selected_ruleset.name = ruleset_name_text;
@@ -128,7 +128,7 @@ func _on_rule_move_requested(mover: RuleEditor, up: bool) -> void:
 	var original_index := selected_ruleset.rules.find(mover.rule);
 	var new_index := original_index - 1 if up else original_index + 1;
 	
-	print("%s | %s" % [original_index, new_index])
+	# print("%s | %s" % [original_index, new_index])
 	
 	if new_index < 0 or new_index >= selected_ruleset.rules.size():
 		return;
@@ -151,7 +151,7 @@ func _on_add_cell_button_pressed() -> void:
 
 
 func _on_cell_delete_requested(to_delete: CellEditor) -> void:
-	print("a");
+	# print("a");
 	var index := selected_ruleset.cells.find(to_delete.type);
 	if index != -1:
 		selected_ruleset.cells.remove_at(index);

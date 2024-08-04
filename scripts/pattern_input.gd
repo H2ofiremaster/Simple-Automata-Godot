@@ -99,12 +99,12 @@ func _on_state_edit_text_submitted(new_text: String) -> void:
 
 
 func _on_name_select_item_selected(index: int) -> void:
-	print("Pattern '%s' updated to:" % pattern)
+	# print("Pattern '%s' updated to:" % pattern)
 	if index == 0:
 		pattern.cell_name = "";
 	else:
 		pattern.cell_name = name_select.get_item_text(index);
-	print(pattern)
+	# print(pattern)
 	
 
 

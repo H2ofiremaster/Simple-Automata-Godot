@@ -52,7 +52,7 @@ func update_state() -> void:
 	var new_state := type.default_state();
 	for key: String in state.keys():
 		if new_state.has(key):
-			print("setting '%s' to %s" % [key, state[key]])
+			# print("setting '%s' to %s" % [key, state[key]])
 			new_state[key] = state[key];
 	state = new_state;
 func _on_mouse_entered() -> void:

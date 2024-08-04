@@ -28,12 +28,12 @@ func _on_ruleset_creator_ruleset_changed(new_ruleset: Ruleset) -> void:
 	grid.ruleset = ruleset;
 	grid.selected_cell_type = ruleset.default_type();
 	grid.fill_default();
-	print(grid.cells);
+	# print(grid.cells);
 
 
 func _on_cell_type_selected(cell_type: CellType) -> void:
 	grid.selected_cell_type = cell_type;
-	print("Selected CellType: " + str(cell_type));
+	# print("Selected CellType: " + str(cell_type));
 
 
 

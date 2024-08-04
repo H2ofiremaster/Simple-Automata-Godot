@@ -40,37 +40,40 @@ func next_generation() -> void:
 	var cell_count := cells.size();
 	var new_cells: Array[Cell] = [];
 	new_cells.resize(cell_count);
+	
 	for i in range(cell_count):
-		var cell: Cell = cells[i].clone();
 		#print("---")
 		#print("Transforming: %s" % cell)
+		var cell := cells[i];
 		for rule in ruleset.rules:
-			if rule.transform(cell, get_neighbors(i), ruleset):
-				break;
+			cell = rule.transform(cell, get_neighbors(i), ruleset)
+			if cell != cells[i]: break;
 		new_cells[i] = cell;
 	cells = new_cells
 	refresh();
 
 func get_neighbors(index: int) -> Array[Cell]:
-	var neighbors: Array[Cell] = [];
-	neighbors.append(get_neighbor(index, -1, 1)); # Northeast
-	neighbors.append(get_neighbor(index, -1, 0)); # North
-	neighbors.append(get_neighbor(index, -1, -1)); # Northwest
-	neighbors.append(get_neighbor(index, 0, 1)); # East
-	neighbors.append(get_neighbor(index, 0, -1)); # West
-	neighbors.append(get_neighbor(index, 1, 1)); # Southeast
-	neighbors.append(get_neighbor(index, 1, 0)); # South
-	neighbors.append(get_neighbor(index, 1, -1)); # Southwest
-	return neighbors;
-
-func get_neighbor(index: int, y_offset: int, x_offset: int) -> Cell:
 	#warning-ignore:integer_division
-	var row := (index / columns) + y_offset;
-	var column := (index % columns) + x_offset;
-	if row < 0 or row >= columns: return null;
-	if column < 0 or column >= columns: return null;
+	var row := index / columns;
+	var column := index % columns;
+	return [
+		get_neighbor(row, column, -1, 1), # Northeast
+		get_neighbor(row, column, -1, 0), # North
+		get_neighbor(row, column, -1, -1), # Northwest
+		get_neighbor(row, column, 0, 1), # East
+		get_neighbor(row, column, 0, -1), # West
+		get_neighbor(row, column, 1, 1), # Southeast
+		get_neighbor(row, column, 1, 0), # South
+		get_neighbor(row, column, 1, -1) # Southwest
+	];
+
+func get_neighbor(row: int, column: int, y_offset: int, x_offset: int) -> Cell:
+	var new_row := row + y_offset;
+	var new_column := column + x_offset;
+	if new_row < 0 or new_row >= columns: return null;
+	if new_column < 0 or new_column >= columns: return null;
 	
-	return cells[index + (columns * y_offset) + x_offset];
+	return cells[(new_row * columns) + new_column];
 
 
 func generate() -> void:
@@ -87,13 +90,19 @@ func generate() -> void:
 
 
 func refresh() -> void:
-	for child in get_children():
+	var current_children := get_children();
+	var cells_dict := {};
+	for cell in cells: cells_dict[cell] = true;
+	for child in current_children:
 		if child is Cell:
-			child.queue_free()
+			self.remove_child(child)
+			if child not in cells_dict:
+				child.queue_free();
 	for cell in cells:
 		self.add_child(cell);
-		cell.hovered_cell_updated.connect(_on_hovered_cell_updated);
-		cell.updated.connect(_on_cell_updated);
+		if not cell.hovered_cell_updated.is_connected(_on_hovered_cell_updated):
+			cell.hovered_cell_updated.connect(_on_hovered_cell_updated);
+			cell.updated.connect(_on_cell_updated);
 
 
 func _on_hovered_cell_updated(cell: Cell) -> void:

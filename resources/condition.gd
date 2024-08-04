@@ -59,8 +59,8 @@ func matches(cell: Cell, neighbors: Array[Cell], ruleset: Ruleset) -> bool:
 			#print("Cell '%s' has '%d' matching neighbors. Needs '%s' Matches: %s" % [cell, count, counts, count in counts])
 			return count in counts;
 		ConditionType.DIRECTIONAL:
-			var is_match := false;
 			for direction: Direction in directions:
-				is_match = is_match or pattern.matches(neighbors[direction], ruleset);
-			return is_match;
+				if pattern.matches(neighbors[direction], ruleset):
+					return true;
+			return false;
 	return false;
