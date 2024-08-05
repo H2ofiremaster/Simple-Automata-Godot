@@ -7,7 +7,7 @@ const BLANK_RULESET = preload("res://resources/blank_ruleset.tres")
 
 @onready var cell_selector: GridContainer = $OuterMargins/Panel/InnerMargins/CellSelectorContainer/CellSelector
 @onready var grid: Grid = $GridContainer/GridAspect/Grid
-@onready var cell_label: CellLabel = $GridContainer/CellLabel
+@onready var cell_label: CellLabel = $ButtonContainer/CellLabelMargins/CellLabel
 
 func _ready() -> void:
 	await get_tree().create_timer(0.1).timeout;

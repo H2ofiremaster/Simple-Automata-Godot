@@ -80,10 +80,10 @@ func _on_expand_button_toggled(toggled_on: bool) -> void:
 		var dict := Pattern.parse_state(state_edit.text);
 		pattern.cell_state = dict;
 	else:
-		expand_button.text = "[ . . . ]";
+		expand_button.text = "[ . . . ]" if state_edit.text != "" else "[]";
 		state_edit.visible = false;
 		left_bracket.visible = false;
-		pattern.cell_state = {};
+		#pattern.cell_state = {};
 
 
 func _on_state_edit_text_submitted(new_text: String) -> void:

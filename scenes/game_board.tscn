@@ -94,6 +94,23 @@ text = "Grid Size"
 layout_mode = 2
 text = "5"
 
+[node name="CellLabelMargins" type="MarginContainer" parent="ButtonContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CellLabel" type="VBoxContainer" parent="ButtonContainer/CellLabelMargins"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("5_y3s0c")
+
+[node name="Name" type="Label" parent="ButtonContainer/CellLabelMargins/CellLabel"]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="StateContainer" type="VBoxContainer" parent="ButtonContainer/CellLabelMargins/CellLabel"]
+layout_mode = 2
+
 [node name="GridContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -105,27 +122,6 @@ size_flags_vertical = 3
 
 [node name="Grid" parent="GridContainer/GridAspect" instance=ExtResource("1_i4pjs")]
 layout_mode = 2
-
-[node name="CellLabel" type="HBoxContainer" parent="GridContainer"]
-modulate = Color(1, 1, 1, 0)
-layout_mode = 2
-alignment = 1
-script = ExtResource("5_y3s0c")
-
-[node name="Name" type="Label" parent="GridContainer/CellLabel"]
-layout_mode = 2
-horizontal_alignment = 1
-
-[node name="OpeningBracket" type="Label" parent="GridContainer/CellLabel"]
-layout_mode = 2
-text = "["
-
-[node name="StateContainer" type="HBoxContainer" parent="GridContainer/CellLabel"]
-layout_mode = 2
-
-[node name="ClosingBracket" type="Label" parent="GridContainer/CellLabel"]
-layout_mode = 2
-text = "]"
 
 [node name="OuterMargins" type="MarginContainer" parent="."]
 layout_mode = 2

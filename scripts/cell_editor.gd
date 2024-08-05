@@ -37,7 +37,9 @@ func _on_state_select_item_selected(index: int) -> void:
 	if index <= 1: 
 		state_edit.text = "";
 		state_name_input.text = "";
+		state_edit.editable = false;
 		return;
+	state_edit.editable = true;
 	var state_name: String = state_select.get_item_text(index);
 	var state: Array = get_state(state_name);
 	state_edit.text = "\n".join(state);

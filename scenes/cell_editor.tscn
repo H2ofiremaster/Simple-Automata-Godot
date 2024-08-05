@@ -113,6 +113,7 @@ placeholder_text = "value_1
 value_2
 value_3
 value_4"
+editable = false
 
 [connection signal="pressed" from="MarginContainer/MainContainer/DeleteButton" to="." method="_on_delete_button_pressed"]
 [connection signal="color_changed" from="MarginContainer/MainContainer/PreviewContainer/ColorSelect" to="." method="_on_color_select_color_changed"]
