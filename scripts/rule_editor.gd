@@ -29,8 +29,7 @@ func initialize(init_parent: RulesetEditor, init_ruleset: Ruleset, init_rule: Ru
 	for condition in rule.conditions:
 		var editor: ConditionEditor = CONDITION_EDITOR.instantiate();
 		conditions.add_child(editor);
-		editor.delete_requested.connect(_on_condition_delete_requested);
-		editor.initialize(ruleset, condition);
+		editor.initialize(self, ruleset, condition);
 
 
 func update_cell_names() -> void:
@@ -40,21 +39,20 @@ func update_cell_names() -> void:
 		if condition is ConditionEditor:
 			condition.pattern_input.update_cell_names();
 
+func delete_condition(editor: ConditionEditor) -> void:
+	var target_index := rule.conditions.find(editor.condition);
+	if target_index != -1:
+		rule.conditions.remove_at(target_index);
+	editor.queue_free();
+
+# Signals
 
 func _on_add_condition_button_pressed() -> void:
 	var new_condition_editor: ConditionEditor = CONDITION_EDITOR.instantiate();
 	var new_condition := Condition.new();
 	rule.conditions.append(new_condition);
 	conditions.add_child(new_condition_editor);
-	new_condition_editor.delete_requested.connect(_on_condition_delete_requested);
-	new_condition_editor.initialize(ruleset, new_condition);
-
-
-func _on_condition_delete_requested(to_delete: ConditionEditor) -> void:
-	var target_index := rule.conditions.find(to_delete.condition);
-	if target_index != -1:
-		rule.conditions.remove_at(target_index);
-	to_delete.queue_free();
+	new_condition_editor.initialize(self, ruleset, new_condition);
 
 
 func _on_delete_button_pressed() -> void:

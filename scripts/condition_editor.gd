@@ -1,7 +1,6 @@
 class_name ConditionEditor extends Control
 
-signal delete_requested(to_delete: ConditionEditor);
-
+@export var parent: RuleEditor;
 @export var ruleset: Ruleset;
 @export var condition: Condition;
 
@@ -12,7 +11,8 @@ signal delete_requested(to_delete: ConditionEditor);
 @onready var directional_button: Button = $Margins/OuterContainer/TypeSelector/DirectionalButton
 
 ## Initializes this condition editor.
-func initialize(init_ruleset: Ruleset, init_condition: Condition) -> void:
+func initialize(init_parent: RuleEditor, init_ruleset: Ruleset, init_condition: Condition) -> void:
+	parent = init_parent;
 	ruleset = init_ruleset;
 	condition = init_condition;
 	
@@ -47,4 +47,4 @@ func _on_directional_button_pressed() -> void:
 
 
 func _on_delete_button_pressed() -> void:
-	delete_requested.emit(self);
+	parent.delete_condition(self)
