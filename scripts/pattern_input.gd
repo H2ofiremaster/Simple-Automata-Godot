@@ -97,6 +97,9 @@ func _on_state_edit_text_submitted(new_text: String) -> void:
 		error_label.text = ERROR_LABEL_MESSAGE + error;
 	state_edit.release_focus()
 
+func _on_state_edit_focus_exited() -> void:
+	_on_state_edit_text_submitted(state_edit.text);
+
 
 func _on_name_select_item_selected(index: int) -> void:
 	# print("Pattern '%s' updated to:" % pattern)
@@ -112,3 +115,5 @@ func _on_not_button_toggled(toggled_on: bool) -> void:
 	pattern.inverted = toggled_on;
 	not_button.modulate = Color.WHITE if toggled_on else Color.DARK_GRAY
 	not_button.text = "Not" if toggled_on else "   "
+
+

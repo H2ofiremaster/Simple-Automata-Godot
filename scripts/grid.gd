@@ -1,8 +1,5 @@
 class_name Grid extends GridContainer
 
-signal cell_type_updated(cell: Cell);
-signal cell_state_updated(cell: Cell);
-
 const LINE_COLOR = Color.DIM_GRAY;
 const SPACING = 40;
 const TEST_CELL_TYPE = preload("res://resources/test_cell_type.tres")
@@ -106,11 +103,11 @@ func refresh() -> void:
 
 
 func _on_hovered_cell_updated(cell: Cell) -> void:
-	cell_type_updated.emit(cell);
+	game_board.cell_label.update(cell);
 
 
 func _on_cell_updated(cell: Cell, type_updated: bool) -> void:
-	if type_updated: cell_type_updated.emit(cell);
-	else: cell_state_updated.emit(cell);
+	if type_updated: game_board.cell_label.update(cell);
+	else: game_board.cell_label.update_states(cell);
 
 

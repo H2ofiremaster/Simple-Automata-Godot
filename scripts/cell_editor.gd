@@ -94,6 +94,8 @@ func _on_add_button_pressed() -> void:
 func _on_remove_button_pressed() -> void:
 	var current_index := state_select.selected;
 	if current_index <= 1: return;
+	var state_name := state_select.get_item_text(current_index);
+	type.states.erase(state_name); 
 	state_select.remove_item(current_index);
 	state_select.select(0);
 	_on_state_select_item_selected(0);
