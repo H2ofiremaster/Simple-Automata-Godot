@@ -10,6 +10,8 @@ var selected_cell_type: CellType;
 var ruleset: Ruleset;
 var game_board: GameBoard;
 
+var last_hovered_index: int = -1;
+
 func initialize(init_ruleset: Ruleset, init_game_board: GameBoard) -> void:
 	self.ruleset = init_ruleset;
 	self.game_board = init_game_board;
@@ -99,8 +101,8 @@ func refresh() -> void:
 			var new_cell := cells[index];
 			self.add_child(new_cell);
 			self.move_child(new_cell, index);
-			new_cell.hovered_cell_updated.connect(_on_hovered_cell_updated);
-			new_cell.updated.connect(_on_cell_updated);
+	if last_hovered_index > -1:
+		cells[last_hovered_index].check_hover_status();
 
 
 func _on_hovered_cell_updated(cell: Cell) -> void:

@@ -17,6 +17,7 @@ func transform(cell: Cell, index: int, grid: Grid, ruleset: Ruleset) -> Cell:
 	for condition in conditions:
 		if not condition.matches(grid.get_neighbors(index)):
 			return cell;
+	
 	var new_cell := cell.clone();
 	if output.cell_name:
 		new_cell.type = ruleset.get_cell(output.cell_name);
@@ -24,8 +25,10 @@ func transform(cell: Cell, index: int, grid: Grid, ruleset: Ruleset) -> Cell:
 		for key: String in output.cell_state.keys():
 			if new_cell.state[key] != null:
 				new_cell.state[key] = output.cell_state[key];
+	
 	if not output.cell_name and not output.cell_state:
 		print("%s specifies neither name nor state." % output)
+	
 	return new_cell;
 
 func clone() -> Rule:

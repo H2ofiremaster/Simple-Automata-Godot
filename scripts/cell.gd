@@ -24,10 +24,14 @@ static func create(init_type: CellType, init_state: Dictionary, init_grid: Grid)
 	cell.type = init_type;
 	cell.state = init_state;
 	cell.grid = init_grid;
+	cell.hovered_cell_updated.connect(init_grid._on_hovered_cell_updated);
+	cell.updated.connect(init_grid._on_cell_updated);
 	return cell;
+
 
 func _to_string() -> String:
 	return "Cell(%s%s)" % [type, state]
+
 
 func cycle_selected_state(amount: int) -> void:
 	if state.is_empty(): return;
@@ -41,12 +45,15 @@ func cycle_selected_state(amount: int) -> void:
 	if target_index < 0: target_index = possible_states.size() - 1;
 	state[selected_key] = possible_states[target_index];
 
+
 func clone() -> Cell:
-	var cell := CELL.instantiate();
-	cell.type = self.type;
-	cell.state = self.state.duplicate();
-	cell.grid = self.grid;
-	return cell;
+	return Cell.create(self.type, self.state.duplicate(), self.grid);
+	# var cell := CELL.instantiate();
+	# cell.type = self.type;
+	# cell.state = self.state.duplicate();
+	# cell.grid = self.grid;
+	# return cell;
+
 
 func update_state() -> void:
 	var new_state := type.default_state();
@@ -55,6 +62,14 @@ func update_state() -> void:
 			# print("setting '%s' to %s" % [key, state[key]])
 			new_state[key] = state[key];
 	state = new_state;
+
+func check_hover_status() -> void:
+	if not get_viewport(): return;
+	if get_global_rect().has_point(get_global_mouse_position()):
+		hovered_cell_updated.emit(self);
+
+# Signals
+
 func _on_mouse_entered() -> void:
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		self.type = grid.selected_cell_type;
@@ -63,6 +78,7 @@ func _on_mouse_entered() -> void:
 		self.type = grid.ruleset.default_type()
 		updated.emit(self, true);
 	hovered_cell_updated.emit(self);
+	grid.last_hovered_index = grid.cells.find(self);
 
 
 func _on_mouse_exited() -> void:

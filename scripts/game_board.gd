@@ -35,9 +35,3 @@ func _on_cell_type_selected(cell_type: CellType) -> void:
 	grid.selected_cell_type = cell_type;
 	# print("Selected CellType: " + str(cell_type));
 
-
-
-func _on_grid_hovered_cell_updated(cell: Cell) -> void:
-	cell_label.update(cell);
-
-
