@@ -8,14 +8,14 @@ class_name Rule extends Resource
 ##
 ## Parameters:
 ##   cell: The target cell to transform.
-##   neighbors: The target cell's neighbors.
+##   index: The target cell's neighbors.
 ##   ruleset: The ruleset to use for the transformation.
 ## Returns: The transformed cell, or the input cell if it is the same.
-func transform(cell: Cell, neighbors: Array[Cell], ruleset: Ruleset) -> Cell:
+func transform(cell: Cell, index: int, grid: Grid, ruleset: Ruleset) -> Cell:
 	if not input.matches(cell):
 		return cell;
 	for condition in conditions:
-		if not condition.matches(cell, neighbors, ruleset):
+		if not condition.matches(cell, grid.get_neighbors(index), ruleset):
 			return cell;
 	var new_cell := cell.clone();
 	if output.cell_name:

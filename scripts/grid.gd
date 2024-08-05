@@ -38,14 +38,14 @@ func next_generation() -> void:
 	var new_cells: Array[Cell] = [];
 	new_cells.resize(cell_count);
 	
-	for i in range(cell_count):
+	for index in range(cell_count):
 		#print("---")
 		#print("Transforming: %s" % cell)
-		var cell := cells[i];
+		var cell := cells[index];
 		for rule in ruleset.rules:
-			cell = rule.transform(cell, get_neighbors(i), ruleset)
-			if cell != cells[i]: break;
-		new_cells[i] = cell;
+			cell = rule.transform(cell, index, self, ruleset)
+			if cell != cells[index]: break;
+		new_cells[index] = cell;
 	cells = new_cells
 	refresh();
 

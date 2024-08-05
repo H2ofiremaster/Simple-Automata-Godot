@@ -171,5 +171,3 @@ columns = 3
 [connection signal="value_changed" from="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/SpeedControl/SpeedSlider" to="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer" method="_on_speed_slider_value_changed"]
 [connection signal="text_submitted" from="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/SpeedControl/SpeedEdit" to="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer" method="_on_speed_edit_text_submitted"]
 [connection signal="text_submitted" from="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer/GridSizeContainer/GridSizeEdit" to="ButtonContainer/OuterMargins/Panel/InnerMargins/ControlsContainer" method="_on_grid_size_edit_text_submitted"]
-[connection signal="cell_state_updated" from="GridContainer/GridAspect/Grid" to="GridContainer/CellLabel" method="_on_grid_cell_state_updated"]
-[connection signal="cell_type_updated" from="GridContainer/GridAspect/Grid" to="GridContainer/CellLabel" method="_on_grid_cell_type_updated"]

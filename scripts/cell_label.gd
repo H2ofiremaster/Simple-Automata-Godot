@@ -33,11 +33,3 @@ func update_states(cell: Cell) -> void:
 		label.modulate = Color.WHITE;
 	if real_children.size() != 0:
 		real_children[cell.selected_state_index].modulate = Color.YELLOW;
-
-
-func _on_grid_cell_state_updated(cell: Cell) -> void:
-	update_states(cell);
-
-
-func _on_grid_cell_type_updated(cell: Cell) -> void:
-	update(cell);
