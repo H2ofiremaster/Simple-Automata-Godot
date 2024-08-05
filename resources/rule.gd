@@ -12,7 +12,7 @@ class_name Rule extends Resource
 ##   ruleset: The ruleset to use for the transformation.
 ## Returns: The transformed cell, or the input cell if it is the same.
 func transform(cell: Cell, neighbors: Array[Cell], ruleset: Ruleset) -> Cell:
-	if not input.matches(cell, ruleset):
+	if not input.matches(cell):
 		return cell;
 	for condition in conditions:
 		if not condition.matches(cell, neighbors, ruleset):
@@ -27,3 +27,12 @@ func transform(cell: Cell, neighbors: Array[Cell], ruleset: Ruleset) -> Cell:
 	if not output.cell_name and not output.cell_state:
 		print("%s specifies neither name nor state." % output)
 	return new_cell;
+
+func clone() -> Rule:
+	var rule := Rule.new();
+	rule.input = input.clone();
+	rule.output = output.clone();
+	var new_conditions: Array[Condition];
+	new_conditions.assign(conditions.map(func(c: Condition) -> Condition: return c.clone()));
+	rule.conditions = new_conditions;
+	return rule;

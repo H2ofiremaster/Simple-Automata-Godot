@@ -1,6 +1,6 @@
 class_name Main extends Control
 
-@onready var ruleset_creator: RulesetCreator = $CanvasLayer/RulesetCreator
+@onready var ruleset_creator: RulesetEditor = $CanvasLayer/RulesetEditor
 @onready var game_board: GameBoard = $GameBoard
 
 # Called when the node enters the scene tree for the first time.

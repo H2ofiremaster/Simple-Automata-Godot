@@ -1,10 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://drdiu2t881jyt"]
+[gd_scene load_steps=7 format=3 uid="uid://drdiu2t881jyt"]
 
 [ext_resource type="PackedScene" uid="uid://b5afhyldsq2xg" path="res://scenes/pattern_input.tscn" id="1_b5gl5"]
 [ext_resource type="Script" path="res://scripts/rule_editor.gd" id="1_eflva"]
 [ext_resource type="StyleBox" uid="uid://c4higkyqc0n2f" path="res://styles/red_button.tres" id="2_3jw2m"]
 [ext_resource type="Resource" uid="uid://p0giqu8c211l" path="res://resources/test_ruleset.tres" id="2_vh0im"]
-[ext_resource type="PackedScene" uid="uid://dpx080csyd7fn" path="res://scenes/condition_editor.tscn" id="3_3fiha"]
 [ext_resource type="StyleBox" uid="uid://cpq2tagx7jlgd" path="res://styles/red_button_hover.tres" id="3_pldu7"]
 [ext_resource type="StyleBox" uid="uid://v4drwcklu7l7" path="res://styles/red_button_pressed.tres" id="4_f7oyp"]
 
@@ -14,7 +13,6 @@ offset_bottom = 170.0
 size_flags_horizontal = 3
 script = ExtResource("1_eflva")
 ruleset = ExtResource("2_vh0im")
-condition_editor_scene = ExtResource("3_3fiha")
 
 [node name="Margins" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -85,6 +83,10 @@ layout_mode = 2
 layout_mode = 2
 alignment = 1
 
+[node name="CopyButton" type="Button" parent="Margins/SurroundingContainer/PositionContainer"]
+layout_mode = 2
+text = "⧉"
+
 [node name="MoveUpButton" type="Button" parent="Margins/SurroundingContainer/PositionContainer"]
 layout_mode = 2
 text = " ^ "
@@ -96,5 +98,6 @@ text = " v "
 [connection signal="pressed" from="Margins/SurroundingContainer/DeleteButton" to="." method="_on_delete_button_pressed"]
 [connection signal="pressed" from="Margins/SurroundingContainer/MainContainer/Conditions/ConditionContainer/AddContainer/AddConditionButton" to="." method="_on_add_condition_button_pressed"]
 [connection signal="toggled" from="Margins/SurroundingContainer/MainContainer/Conditions/ConditionContainer/AddContainer/CollapseButton" to="." method="_on_collapse_button_toggled"]
+[connection signal="pressed" from="Margins/SurroundingContainer/PositionContainer/CopyButton" to="." method="_on_copy_button_pressed"]
 [connection signal="pressed" from="Margins/SurroundingContainer/PositionContainer/MoveUpButton" to="." method="_on_move_up_button_pressed"]
 [connection signal="pressed" from="Margins/SurroundingContainer/PositionContainer/MoveDownButton" to="." method="_on_move_down_button_pressed"]

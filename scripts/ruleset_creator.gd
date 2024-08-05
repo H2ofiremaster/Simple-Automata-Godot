@@ -1,4 +1,4 @@
-class_name RulesetCreator extends Control
+class_name RulesetEditor extends Control
 
 signal ruleset_changed(new_ruleset: Ruleset);
 
@@ -24,7 +24,6 @@ var rulesets: Array[Ruleset] = [];
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	
 	var dir := DirAccess.open(RULESET_PATH);
 	if dir == null:
 		DirAccess.make_dir_absolute(RULESET_PATH);
@@ -44,7 +43,6 @@ func save() -> void:
 	if error != Error.OK:
 		printerr(error);
 
-
 func disable_rule_move_buttons() -> void:
 	var i: int = 0;
 	for editor: RuleEditor in rules.get_children():
@@ -56,6 +54,38 @@ func disable_rule_move_buttons() -> void:
 			editor.move_down_button.disabled = true;
 		i += 1;
 
+## Adds a rule editor for the specified rule
+func add_rule_editor(rule: Rule, index: int = -1) -> void:
+	var editor: RuleEditor = rule_editor_scene.instantiate();
+	rules.add_child(editor);
+	editor.initialize(self, selected_ruleset, rule);
+	if index > -1:
+		rules.move_child(editor, index);
+	disable_rule_move_buttons();
+
+func move_rule_editor(editor: RuleEditor, up: bool) -> void:
+	var original_index := selected_ruleset.rules.find(editor.rule);
+	var new_index := original_index - 1 if up else original_index + 1;
+	
+	# print("%s | %s" % [original_index, new_index])
+	
+	if new_index < 0 or new_index >= selected_ruleset.rules.size():
+		return;
+	
+	var item_b := selected_ruleset.rules[new_index];
+	selected_ruleset.rules[new_index] = selected_ruleset.rules[original_index];
+	selected_ruleset.rules[original_index] = item_b;
+	
+	rules.move_child(editor, new_index);
+	disable_rule_move_buttons();
+
+func delete_rule_editor(to_delete: RuleEditor) -> void:
+	var index := selected_ruleset.rules.find(to_delete.rule);
+	if index != -1:
+		selected_ruleset.rules.remove_at(index);
+	to_delete.queue_free();
+
+# Signals
 
 func _on_new_button_pressed() -> void:
 	var ruleset_name_text := ruleset_name.text;
@@ -99,47 +129,15 @@ func _on_ruleset_selector_item_selected(index: int) -> void:
 		editor.cell_name_updated.connect(_on_cell_name_updated);
 		editor.initialize(selected_ruleset, cell);
 	for rule in selected_ruleset.rules:
-		var editor: RuleEditor = rule_editor_scene.instantiate();
-		rules.add_child(editor);
-		editor.delete_requested.connect(_on_rule_delete_requested);
-		editor.move_requested.connect(_on_rule_move_requested);
-		editor.initialize(selected_ruleset, rule);
+		add_rule_editor(rule);
 	disable_rule_move_buttons()
 
 
 func _on_add_rule_button_pressed() -> void:
-	var editor: RuleEditor = rule_editor_scene.instantiate();
 	var rule := Rule.new();
 	selected_ruleset.rules.append(rule);
-	rules.add_child(editor);
-	editor.delete_requested.connect(_on_rule_delete_requested);
-	editor.move_requested.connect(_on_rule_move_requested);
-	editor.initialize(selected_ruleset, rule);
-	disable_rule_move_buttons()
+	add_rule_editor(rule)
 
-
-func _on_rule_delete_requested(to_delete: RuleEditor) -> void:
-	var index := selected_ruleset.rules.find(to_delete.rule);
-	if index != -1:
-		selected_ruleset.rules.remove_at(index);
-	to_delete.queue_free();
-
-func _on_rule_move_requested(mover: RuleEditor, up: bool) -> void:
-	var original_index := selected_ruleset.rules.find(mover.rule);
-	var new_index := original_index - 1 if up else original_index + 1;
-	
-	# print("%s | %s" % [original_index, new_index])
-	
-	if new_index < 0 or new_index >= selected_ruleset.rules.size():
-		return;
-	
-	var item_b := selected_ruleset.rules[new_index];
-	selected_ruleset.rules[new_index] = selected_ruleset.rules[original_index];
-	selected_ruleset.rules[original_index] = item_b;
-	
-	rules.move_child(rules.get_child(original_index), new_index);
-	
-	disable_rule_move_buttons();
 
 func _on_add_cell_button_pressed() -> void:
 	var editor: CellEditor = cell_editor_scene.instantiate();

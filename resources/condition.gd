@@ -49,18 +49,27 @@ func _to_string() -> String:
 			return "Numeric(%s = %s)" % [counts, pattern]
 	return "None"
 
-func matches(cell: Cell, neighbors: Array[Cell], ruleset: Ruleset) -> bool:
+func matches(_cell: Cell, neighbors: Array[Cell], ruleset: Ruleset) -> bool:
 	match type:
 		ConditionType.NUMERIC:
 			var count: int = 0;
 			for neighbor in neighbors:
-				if pattern.matches(neighbor, ruleset):
+				if pattern.matches(neighbor):
 					count += 1;
 			#print("Cell '%s' has '%d' matching neighbors. Needs '%s' Matches: %s" % [cell, count, counts, count in counts])
 			return count in counts;
 		ConditionType.DIRECTIONAL:
 			for direction: Direction in directions:
-				if pattern.matches(neighbors[direction], ruleset):
+				if pattern.matches(neighbors[direction]):
 					return true;
 			return false;
 	return false;
+
+func clone() -> Condition:
+	var condition := Condition.new();
+	condition.type = type;
+	condition.directions = directions.duplicate();
+	condition.counts = counts.duplicate();
+	condition.pattern = pattern.clone();
+	condition.display = display;
+	return condition;

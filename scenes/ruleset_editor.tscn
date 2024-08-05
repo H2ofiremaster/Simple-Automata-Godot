@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://dldic4ix1v6dq" path="res://scenes/cell_editor.tscn" id="2_hnosh"]
 [ext_resource type="PackedScene" uid="uid://drdiu2t881jyt" path="res://scenes/rule_editor.tscn" id="2_k62k2"]
 
-[node name="RulesetCreator" type="Control"]
+[node name="RulesetEditor" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
