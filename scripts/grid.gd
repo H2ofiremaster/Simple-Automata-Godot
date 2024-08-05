@@ -29,9 +29,11 @@ func add_line(point1: Vector2, point2: Vector2) -> void:
 
 
 func fill_default() -> void:
+	for child in get_children():
+		child.queue_free();
 	for i in cells.size():
 		cells[i] = Cell.default(self);
-	refresh();
+		add_child(cells[i]);
 
 func next_generation() -> void:
 	var cell_count := cells.size();
@@ -50,7 +52,6 @@ func next_generation() -> void:
 	refresh();
 
 func get_neighbors(index: int) -> Array[Cell]:
-	#warning-ignore:integer_division
 	var row := index / columns;
 	var column := index % columns;
 	return [
@@ -91,15 +92,15 @@ func refresh() -> void:
 	var cells_dict := {};
 	for cell in cells: cells_dict[cell] = true;
 	for child in current_children:
-		if child is Cell:
-			self.remove_child(child)
-			if child not in cells_dict:
-				child.queue_free();
-	for cell in cells:
-		self.add_child(cell);
-		if not cell.hovered_cell_updated.is_connected(_on_hovered_cell_updated):
-			cell.hovered_cell_updated.connect(_on_hovered_cell_updated);
-			cell.updated.connect(_on_cell_updated);
+		if child is Cell and child not in cells_dict:
+			var index := child.get_index();
+			child.queue_free();
+			self.remove_child(child);
+			var new_cell := cells[index];
+			self.add_child(new_cell);
+			self.move_child(new_cell, index);
+			new_cell.hovered_cell_updated.connect(_on_hovered_cell_updated);
+			new_cell.updated.connect(_on_cell_updated);
 
 
 func _on_hovered_cell_updated(cell: Cell) -> void:

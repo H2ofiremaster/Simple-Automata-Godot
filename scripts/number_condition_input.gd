@@ -43,6 +43,7 @@ func _handle_upper_bound(new_text: String, delimiter: String) -> bool:
 	var stripped_text := _strip_text(new_text);
 	if stripped_text.length() != 1: return false;
 	var upper_bound := int(stripped_text);
+	@warning_ignore("unassigned_variable")
 	var numbers: Array[int];
 	numbers.assign(range(0, upper_bound + 1));
 	var number_format: String;
@@ -57,6 +58,7 @@ func _handle_lower_bound(new_text: String, delimiter: String) -> bool:
 	var stripped_text := _strip_text(new_text);
 	if stripped_text.length() != 1: return false;
 	var lower_bound := int(stripped_text);
+	@warning_ignore("unassigned_variable")
 	var numbers: Array[int];
 	numbers.assign(range(lower_bound, 9));
 	var number_format: String;
@@ -76,6 +78,7 @@ func _handle_range(new_text: String, delimiter: String) -> bool:
 	if prefix.length() != 1 or suffix.length() != 1: return false;
 	var lower_bound := int(prefix);
 	var upper_bound := int(suffix);
+	@warning_ignore("unassigned_variable")
 	var numbers: Array[int];
 	numbers.assign(range(lower_bound, upper_bound + 1) as Array[int]);
 	var number_format: String 

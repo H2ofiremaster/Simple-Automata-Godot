@@ -15,7 +15,7 @@ func transform(cell: Cell, index: int, grid: Grid, ruleset: Ruleset) -> Cell:
 	if not input.matches(cell):
 		return cell;
 	for condition in conditions:
-		if not condition.matches(cell, grid.get_neighbors(index), ruleset):
+		if not condition.matches(grid.get_neighbors(index)):
 			return cell;
 	var new_cell := cell.clone();
 	if output.cell_name:
@@ -32,6 +32,7 @@ func clone() -> Rule:
 	var rule := Rule.new();
 	rule.input = input.clone();
 	rule.output = output.clone();
+	@warning_ignore("unassigned_variable")
 	var new_conditions: Array[Condition];
 	new_conditions.assign(conditions.map(func(c: Condition) -> Condition: return c.clone()));
 	rule.conditions = new_conditions;
