@@ -10,8 +10,8 @@ class_name CellType extends Resource;
 func default_state() -> Dictionary:
 	var result := {};
 	for state: String in states:
-		var default: String = states.get(state)[0];
-		result[state] = default;
+		if states.get(state).size() > 0:
+			result[state] = states.get(state)[0];
 	return result;
 
 func _to_string() -> String:

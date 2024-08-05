@@ -3,6 +3,7 @@ class_name Rule extends Resource
 @export var input: Pattern = Pattern.new();
 @export var output: Pattern = Pattern.new();
 @export var conditions: Array[Condition] = [];
+@export var editor_color: Color = Color("2c2c2cFF")
 
 ## Transforms a cell according to rules in the specified ruleset.
 ##
@@ -26,9 +27,6 @@ func transform(cell: Cell, index: int, grid: Grid, ruleset: Ruleset) -> Cell:
 			if new_cell.state[key] != null:
 				new_cell.state[key] = output.cell_state[key];
 	
-	if not output.cell_name and not output.cell_state:
-		print("%s specifies neither name nor state." % output)
-	
 	return new_cell;
 
 func clone() -> Rule:
@@ -39,4 +37,5 @@ func clone() -> Rule:
 	var new_conditions: Array[Condition];
 	new_conditions.assign(conditions.map(func(c: Condition) -> Condition: return c.clone()));
 	rule.conditions = new_conditions;
+	rule.editor_color = Color(editor_color);
 	return rule;

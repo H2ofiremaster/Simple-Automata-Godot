@@ -79,7 +79,7 @@ metadata/_edit_use_anchors_ = true
 layout_mode = 2
 text = " Delete "
 
-[node name="Data" type="HBoxContainer" parent="Background/VBoxContainer"]
+[node name="Data" type="HSplitContainer" parent="Background/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 

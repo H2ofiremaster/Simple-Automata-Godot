@@ -1,5 +1,7 @@
 class_name RuleEditor extends Control
 
+signal initialized;
+
 const CONDITION_EDITOR = preload("res://scenes/condition_editor.tscn")
 
 @export var parent: RulesetEditor;
@@ -14,6 +16,7 @@ var rule: Rule;
 @onready var conditions: VBoxContainer = $Margins/SurroundingContainer/MainContainer/Conditions/ConditionContainer/Conditions
 @onready var collapse_button: Button = $Margins/SurroundingContainer/MainContainer/Conditions/ConditionContainer/AddContainer/CollapseButton
 @onready var copy_button: Button = $Margins/SurroundingContainer/PositionContainer/CopyButton
+@onready var color_picker: ColorPickerButton = $Margins/SurroundingContainer/PositionContainer/ColorPicker
 
 
 ## Initializes this RuleEditor. 
@@ -30,6 +33,9 @@ func initialize(init_parent: RulesetEditor, init_ruleset: Ruleset, init_rule: Ru
 		var editor: ConditionEditor = CONDITION_EDITOR.instantiate();
 		conditions.add_child(editor);
 		editor.initialize(self, ruleset, condition);
+	
+	self_modulate = rule.editor_color;
+	color_picker.color = rule.editor_color;
 
 
 func update_cell_names() -> void:
@@ -81,3 +87,9 @@ func _on_copy_button_pressed() -> void:
 	var clone := rule.clone();
 	parent.selected_ruleset.rules.insert(index, clone);
 	parent.add_rule_editor(clone, index);
+	
+
+func _on_color_picker_color_changed(color: Color) -> void:
+	self.self_modulate = color;
+	rule.editor_color = color;
+

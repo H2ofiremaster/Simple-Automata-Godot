@@ -101,7 +101,7 @@ func refresh() -> void:
 			var new_cell := cells[index];
 			self.add_child(new_cell);
 			self.move_child(new_cell, index);
-	if last_hovered_index > -1:
+	if last_hovered_index > -1 && last_hovered_index < cells.size():
 		cells[last_hovered_index].check_hover_status();
 
 
