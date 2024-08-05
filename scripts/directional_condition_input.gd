@@ -46,31 +46,39 @@ func toggle_direction(direction: Condition.Direction, toggle_on: bool) -> void:
 
 func _on_northwest_toggled(toggled_on: bool) -> void:
 	toggle_direction(Condition.Direction.NORTHWEST, toggled_on);
+	northwest_button.modulate = Color.AQUA if toggled_on else Color.WHITE;
 
 
 func _on_north_toggled(toggled_on: bool) -> void:
 	toggle_direction(Condition.Direction.NORTH, toggled_on);
+	north_button.modulate = Color.AQUA if toggled_on else Color.WHITE;
 
 
 func _on_northeast_toggled(toggled_on: bool) -> void:
 	toggle_direction(Condition.Direction.NORTHEAST, toggled_on);
+	northeast_button.modulate = Color.AQUA if toggled_on else Color.WHITE;
 
 
 func _on_west_toggled(toggled_on: bool) -> void:
 	toggle_direction(Condition.Direction.WEST, toggled_on);
+	west_button.modulate = Color.AQUA if toggled_on else Color.WHITE;
 
 
 func _on_east_toggled(toggled_on: bool) -> void:
 	toggle_direction(Condition.Direction.EAST, toggled_on);
+	east_button.modulate = Color.AQUA if toggled_on else Color.WHITE;
 
 
 func _on_southwest_toggled(toggled_on: bool) -> void:
 	toggle_direction(Condition.Direction.SOUTHWEST, toggled_on);
+	southwest_button.modulate = Color.AQUA if toggled_on else Color.WHITE;
 
 
 func _on_south_toggled(toggled_on: bool) -> void:
 	toggle_direction(Condition.Direction.SOUTH, toggled_on);
+	south_button.modulate = Color.AQUA if toggled_on else Color.WHITE;
 
 
 func _on_southeast_toggled(toggled_on: bool) -> void:
 	toggle_direction(Condition.Direction.SOUTHEAST, toggled_on);
+	southeast_button.modulate = Color.AQUA if toggled_on else Color.WHITE;

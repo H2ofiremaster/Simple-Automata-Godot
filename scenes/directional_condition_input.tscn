@@ -1,6 +1,14 @@
-[gd_scene load_steps=2 format=3 uid="uid://b5q0xuxj56twn"]
+[gd_scene load_steps=10 format=3 uid="uid://b5q0xuxj56twn"]
 
 [ext_resource type="Script" path="res://scripts/directional_condition_input.gd" id="1_8sspf"]
+[ext_resource type="Texture2D" uid="uid://p4vt47smcljh" path="res://sprites/arrows/northwest.svg" id="2_q5a51"]
+[ext_resource type="Texture2D" uid="uid://bii7qhgairofb" path="res://sprites/arrows/north.svg" id="3_h5rjp"]
+[ext_resource type="Texture2D" uid="uid://djkh4lv24ugjl" path="res://sprites/arrows/northeast.svg" id="4_5a7kf"]
+[ext_resource type="Texture2D" uid="uid://b0pk5vnxjingy" path="res://sprites/arrows/west.svg" id="5_1msgc"]
+[ext_resource type="Texture2D" uid="uid://c3r5w6ukdje3f" path="res://sprites/arrows/east.svg" id="6_0dp5q"]
+[ext_resource type="Texture2D" uid="uid://bmcd65xfxfoik" path="res://sprites/arrows/southwest.svg" id="7_7td2l"]
+[ext_resource type="Texture2D" uid="uid://wcaa542f2vym" path="res://sprites/arrows/south.svg" id="8_bth6c"]
+[ext_resource type="Texture2D" uid="uid://8bp8kse24tnc" path="res://sprites/arrows/southeast.svg" id="9_e7s7n"]
 
 [node name="DirectionalConditionInput" type="GridContainer"]
 columns = 3
@@ -8,46 +16,80 @@ script = ExtResource("1_8sspf")
 
 [node name="Northwest" type="Button" parent="."]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 toggle_mode = true
-text = "↖"
+icon = ExtResource("2_q5a51")
+icon_alignment = 1
+expand_icon = true
 
 [node name="North" type="Button" parent="."]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 toggle_mode = true
-text = " ↑ "
+icon = ExtResource("3_h5rjp")
+icon_alignment = 1
+expand_icon = true
 
 [node name="Northeast" type="Button" parent="."]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 toggle_mode = true
-text = "↗"
+icon = ExtResource("4_5a7kf")
+icon_alignment = 1
+expand_icon = true
 
 [node name="West" type="Button" parent="."]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 toggle_mode = true
-text = "←"
+icon = ExtResource("5_1msgc")
+icon_alignment = 1
+expand_icon = true
 
 [node name="Center" type="Control" parent="."]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="East" type="Button" parent="."]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 toggle_mode = true
-text = "→"
+icon = ExtResource("6_0dp5q")
+icon_alignment = 1
+expand_icon = true
 
 [node name="Southwest" type="Button" parent="."]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 toggle_mode = true
-text = "↙"
+icon = ExtResource("7_7td2l")
+icon_alignment = 1
+expand_icon = true
 
 [node name="South" type="Button" parent="."]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 toggle_mode = true
-text = " ↓ "
+icon = ExtResource("8_bth6c")
+icon_alignment = 1
+expand_icon = true
 
 [node name="Southeast" type="Button" parent="."]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 toggle_mode = true
-text = "↘"
+icon = ExtResource("9_e7s7n")
+icon_alignment = 1
+expand_icon = true
 
 [connection signal="toggled" from="Northwest" to="." method="_on_northwest_toggled"]
 [connection signal="toggled" from="North" to="." method="_on_north_toggled"]

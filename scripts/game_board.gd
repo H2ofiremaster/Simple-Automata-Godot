@@ -13,7 +13,8 @@ func _ready() -> void:
 	await get_tree().create_timer(0.1).timeout;
 	grid.initialize(BLANK_RULESET, self);
 	_on_ruleset_creator_ruleset_changed(BLANK_RULESET);
-	
+
+# Signals
 
 func _on_ruleset_creator_ruleset_changed(new_ruleset: Ruleset) -> void:
 	ruleset = new_ruleset;

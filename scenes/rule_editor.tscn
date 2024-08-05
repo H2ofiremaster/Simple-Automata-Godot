@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://drdiu2t881jyt"]
+[gd_scene load_steps=12 format=3 uid="uid://drdiu2t881jyt"]
 
 [ext_resource type="PackedScene" uid="uid://b5afhyldsq2xg" path="res://scenes/pattern_input.tscn" id="1_b5gl5"]
 [ext_resource type="Script" path="res://scripts/rule_editor.gd" id="1_eflva"]
@@ -6,6 +6,11 @@
 [ext_resource type="Resource" uid="uid://p0giqu8c211l" path="res://resources/test_ruleset.tres" id="2_vh0im"]
 [ext_resource type="StyleBox" uid="uid://cpq2tagx7jlgd" path="res://styles/red_button_hover.tres" id="3_pldu7"]
 [ext_resource type="StyleBox" uid="uid://v4drwcklu7l7" path="res://styles/red_button_pressed.tres" id="4_f7oyp"]
+[ext_resource type="Texture2D" uid="uid://bp436i44nmr4q" path="res://sprites/trash.svg" id="4_x42u6"]
+[ext_resource type="Texture2D" uid="uid://dlpeyqe1mhubt" path="res://sprites/copy.svg" id="5_77rjv"]
+[ext_resource type="Texture2D" uid="uid://1ogufpfnj8d2" path="res://sprites/arrows/up.svg" id="6_dx6st"]
+[ext_resource type="Texture2D" uid="uid://e5hbo716b7a4" path="res://sprites/transform_arrow.svg" id="7_r53m8"]
+[ext_resource type="Texture2D" uid="uid://b1dy7m71im2up" path="res://sprites/arrows/down.svg" id="7_vxpuv"]
 
 [node name="RuleEditor" type="PanelContainer"]
 offset_right = 580.0
@@ -25,12 +30,16 @@ theme_override_constants/margin_bottom = 20
 layout_mode = 2
 
 [node name="DeleteButton" type="Button" parent="Margins/SurroundingContainer"]
+custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
-theme_override_font_sizes/font_size = 50
 theme_override_styles/normal = ExtResource("2_3jw2m")
 theme_override_styles/hover = ExtResource("3_pldu7")
 theme_override_styles/pressed = ExtResource("4_f7oyp")
-text = " - "
+theme_override_styles/disabled = ExtResource("4_f7oyp")
+theme_override_styles/focus = ExtResource("3_pldu7")
+icon = ExtResource("4_x42u6")
+icon_alignment = 1
+expand_icon = true
 
 [node name="MainContainer" type="VBoxContainer" parent="Margins/SurroundingContainer"]
 layout_mode = 2
@@ -41,16 +50,20 @@ layout_mode = 2
 
 [node name="InputPattern" parent="Margins/SurroundingContainer/MainContainer/Definition" instance=ExtResource("1_b5gl5")]
 layout_mode = 2
+size_flags_horizontal = 0
 default_text = "Anything"
 can_invert = true
 
-[node name="Label" type="Label" parent="Margins/SurroundingContainer/MainContainer/Definition"]
+[node name="TextureRect" type="TextureRect" parent="Margins/SurroundingContainer/MainContainer/Definition"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 50
-text = " => "
+size_flags_horizontal = 0
+texture = ExtResource("7_r53m8")
+expand_mode = 3
+stretch_mode = 4
 
 [node name="OutputPattern" parent="Margins/SurroundingContainer/MainContainer/Definition" instance=ExtResource("1_b5gl5")]
 layout_mode = 2
+size_flags_horizontal = 0
 default_text = "Itself"
 
 [node name="Conditions" type="PanelContainer" parent="Margins/SurroundingContainer/MainContainer"]
@@ -74,7 +87,9 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.1
 toggle_mode = true
-text = "^"
+icon = ExtResource("6_dx6st")
+icon_alignment = 1
+expand_icon = true
 
 [node name="Conditions" type="VBoxContainer" parent="Margins/SurroundingContainer/MainContainer/Conditions/ConditionContainer"]
 layout_mode = 2
@@ -84,16 +99,25 @@ layout_mode = 2
 alignment = 1
 
 [node name="CopyButton" type="Button" parent="Margins/SurroundingContainer/PositionContainer"]
+custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
-text = "⧉"
+icon = ExtResource("5_77rjv")
+icon_alignment = 1
+expand_icon = true
 
 [node name="MoveUpButton" type="Button" parent="Margins/SurroundingContainer/PositionContainer"]
+custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
-text = " ^ "
+icon = ExtResource("6_dx6st")
+icon_alignment = 1
+expand_icon = true
 
 [node name="MoveDownButton" type="Button" parent="Margins/SurroundingContainer/PositionContainer"]
+custom_minimum_size = Vector2(48, 48)
 layout_mode = 2
-text = " v "
+icon = ExtResource("7_vxpuv")
+icon_alignment = 1
+expand_icon = true
 
 [connection signal="pressed" from="Margins/SurroundingContainer/DeleteButton" to="." method="_on_delete_button_pressed"]
 [connection signal="pressed" from="Margins/SurroundingContainer/MainContainer/Conditions/ConditionContainer/AddContainer/AddConditionButton" to="." method="_on_add_condition_button_pressed"]
