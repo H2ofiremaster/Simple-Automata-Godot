@@ -4,11 +4,11 @@ compatibility_minimum = 4.1
 reloadable = true
 
 [libraries]
-linux.debug.x86_64 =     "res://_rust/target/debug/libAutomata.so"
-linux.release.x86_64 =   "res://_rust/target/release/libAutomata.so"
-windows.debug.x86_64 =   "res://_rust/target/debug/Automata.dll"
-windows.release.x86_64 = "res://_rust/target/release/Automata.dll"
-macos.debug =            "res://_rust/target/debug/libAutomata.dylib"
-macos.release =          "res://_rust/target/release/libAutomata.dylib"
-macos.debug.arm64 =      "res://_rust/target/debug/libAutomata.dylib"
-macos.release.arm64 =    "res://_rust/target/release/libAutomata.dylib"
+linux.debug.x86_64 =     "res://_rust/target/debug/libautomata.so"
+linux.release.x86_64 =   "res://_rust/target/release/libautomata.so"
+windows.debug.x86_64 =   "res://_rust/target/debug/automata.dll"
+windows.release.x86_64 = "res://_rust/target/release/automata.dll"
+macos.debug =            "res://_rust/target/debug/libautomata.dylib"
+macos.release =          "res://_rust/target/release/libautomata.dylib"
+macos.debug.arm64 =      "res://_rust/target/debug/libautomata.dylib"
+macos.release.arm64 =    "res://_rust/target/release/libautomata.dylib"

@@ -3,7 +3,7 @@ class_name Condition extends Resource
 @export var type: ConditionType = ConditionType.NUMERIC;
 @export var directions: Array[Direction] = [];
 @export var counts: Array[int] = [];
-@export var pattern: Pattern = Pattern.new();
+@export var pattern: GdPattern = GdPattern.new();
 @export var display: String = "";
 
 enum ConditionType {

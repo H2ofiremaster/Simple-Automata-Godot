@@ -1,4 +1,4 @@
-class_name Pattern extends Resource
+class_name GdPattern extends Resource
 
 @export var cell_name: String;
 @export var cell_state: Dictionary;
@@ -25,8 +25,8 @@ func _matches_absolute(cell: Cell) -> bool:
 				return false;
 	return true;
 
-func clone() -> Pattern:
-	var pattern := Pattern.new();
+func clone() -> GdPattern:
+	var pattern := GdPattern.new();
 	pattern.cell_name = cell_name;
 	pattern.cell_state = cell_state.duplicate();
 	pattern.inverted = inverted;

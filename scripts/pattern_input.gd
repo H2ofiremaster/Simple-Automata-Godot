@@ -6,7 +6,7 @@ const ERROR_LABEL_MESSAGE: String = "Invalid state definition: ";
 @export var default_text: String;
 @export var can_invert: bool = false;
 
-var pattern: Pattern;
+var pattern: GdPattern;
 var selected_cell_type: CellType;
 
 @onready var name_select: OptionButton = $Margins/Container/StatusBar/NameSelect
@@ -22,7 +22,7 @@ func _ready() -> void:
 	name_select.set_item_text(0, default_text);
 
 ## Initializes this RuleEditor.
-func initialize(init_ruleset: Ruleset, init_pattern: Pattern) -> void:
+func initialize(init_ruleset: Ruleset, init_pattern: GdPattern) -> void:
 	ruleset = init_ruleset;
 	pattern = init_pattern;
 	update_cell_names();
@@ -30,7 +30,7 @@ func initialize(init_ruleset: Ruleset, init_pattern: Pattern) -> void:
 	not_button.visible = can_invert;
 	
 	if init_pattern == null:
-		pattern = Pattern.new();
+		pattern = GdPattern.new();
 	else:
 		var current_cell: CellType = ruleset.get_cell(pattern.cell_name);
 		var index: int = ruleset.cells.find(current_cell);
@@ -77,7 +77,7 @@ func _on_expand_button_toggled(toggled_on: bool) -> void:
 		expand_button.text = "]";
 		state_edit.visible = true;
 		left_bracket.visible = true;
-		var dict := Pattern.parse_state(state_edit.text);
+		var dict := GdPattern.parse_state(state_edit.text);
 		pattern.cell_state = dict;
 	else:
 		expand_button.text = "[ . . . ]" if state_edit.text != "" else "[]";
@@ -87,9 +87,9 @@ func _on_expand_button_toggled(toggled_on: bool) -> void:
 
 
 func _on_state_edit_text_submitted(new_text: String) -> void:
-	var error := Pattern.validate_state(new_text);
+	var error := GdPattern.validate_state(new_text);
 	if error == "":
-		var state_dict := Pattern.parse_state(new_text)
+		var state_dict := GdPattern.parse_state(new_text)
 		pattern.cell_state = state_dict;
 		error_label.visible = false;
 	else:

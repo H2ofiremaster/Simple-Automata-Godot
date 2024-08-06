@@ -1,7 +1,7 @@
 class_name Rule extends Resource
 
-@export var input: Pattern = Pattern.new();
-@export var output: Pattern = Pattern.new();
+@export var input: GdPattern = GdPattern.new();
+@export var output: GdPattern = GdPattern.new();
 @export var conditions: Array[Condition] = [];
 @export var editor_color: Color = Color("2c2c2cFF")
 

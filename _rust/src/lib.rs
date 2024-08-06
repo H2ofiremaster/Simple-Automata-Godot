@@ -1,5 +1,7 @@
 use godot::prelude::*;
 
+mod pattern;
+
 struct AutomataExtension;
 
 #[gdextension]
