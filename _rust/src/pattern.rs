@@ -1,8 +1,10 @@
 use godot::prelude::*;
 
+use crate::cell::Cell;
+
 #[derive(GodotClass)]
 #[class(tool, base=Resource)]
-struct Pattern {
+pub struct Pattern {
     #[export]
     cell_name: GString,
     #[export]
@@ -15,8 +17,24 @@ struct Pattern {
 
 #[godot_api]
 impl Pattern {
-    #[func]
-    fn matches() -> bool {
+    fn create(cell_name: GString, cell_state: Dictionary, inverted: bool) -> Gd<Self> {
+        Gd::from_init_fn(|base| Self {
+            cell_name,
+            cell_state,
+            inverted,
+            base,
+        })
+    }
+
+    pub fn full_clone(&self) -> Gd<Self> {
+        Self::create(
+            self.cell_name.clone(),
+            self.cell_state.duplicate_shallow(),
+            self.inverted,
+        )
+    }
+
+    pub fn matches(&self, cell: Gd<Cell>) -> bool {
         todo!()
     }
 }
@@ -28,7 +46,7 @@ impl IResource for Pattern {
         format!("Pattern({prefix}{:?}{:?})", self.cell_name, self.cell_state).into_godot()
     }
 
-    fn init(base: godot::obj::Base<Self::Base>) -> Self {
+    fn init(base: Base<Self::Base>) -> Self {
         Self {
             cell_name: GString::new(),
             cell_state: Dictionary::new(),

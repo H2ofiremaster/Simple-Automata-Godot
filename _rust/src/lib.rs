@@ -1,6 +1,8 @@
 use godot::prelude::*;
 
+mod cell;
 mod pattern;
+mod ruleset;
 
 struct AutomataExtension;
 
