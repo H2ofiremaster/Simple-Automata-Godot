@@ -1,6 +1,7 @@
 use godot::prelude::*;
 
 mod cell;
+mod grid;
 mod pattern;
 mod ruleset;
 

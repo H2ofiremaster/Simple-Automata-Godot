@@ -1,23 +1,47 @@
 use godot::{
-    classes::{display_server::HandleType, ITextureButton, TextureButton},
+    classes::{ITextureButton, TextureButton},
     prelude::*,
 };
+
+use crate::grid::Grid;
 
 #[derive(GodotClass)]
 #[class(base=TextureButton)]
 pub struct Cell {
     scene: Gd<PackedScene>,
     material: Gd<Material>,
+    state: Dictionary,
 
     base: Base<TextureButton>,
+}
+
+#[godot_api]
+impl Cell {
+    const SCENE_PATH: &'static str = "res://scenes/cell.tscn";
+
+    pub fn create(material: Gd<Material>, state: Dictionary) -> Gd<Self> {
+        Gd::from_init_fn(|base| Self {
+            scene: load(Self::SCENE_PATH),
+            material,
+            state,
+            base,
+        })
+    }
+
+    pub fn default(grid: &Grid) -> Gd<Self> {
+        let default_material = grid.get_ruleset().default_material();
+        let default_state = default_material.bind().default_state();
+        Self::create(default_material, default_state)
+    }
 }
 
 #[godot_api]
 impl ITextureButton for Cell {
     fn init(base: Base<Self::Base>) -> Self {
         Self {
-            scene: load("res://scenes/cell.tscn"),
+            scene: load(Self::SCENE_PATH),
             material: Material::blank(),
+            state: Dictionary::new(),
             base,
         }
     }
@@ -40,7 +64,7 @@ pub struct Material {
 
 #[godot_api]
 impl Material {
-    fn blank() -> Gd<Self> {
+    pub fn blank() -> Gd<Self> {
         Gd::from_init_fn(|base| Self {
             name: "Blank".into_godot(),
             color: Color::WHITE,
@@ -67,6 +91,17 @@ impl Material {
             states,
             base,
         }))
+    }
+
+    pub fn default_state(&self) -> Dictionary {
+        let mut result = Dictionary::new();
+        self.states
+            .iter_shared()
+            .filter_map(|(key, value)| {
+                let value: Array<GString> = value.to();
+                value.get(0).map(|v| Some((key, v))).unwrap_or(None)
+            })
+            .collect()
     }
 }
 

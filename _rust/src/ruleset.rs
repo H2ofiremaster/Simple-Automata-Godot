@@ -7,15 +7,33 @@ use crate::{
 
 #[derive(GodotClass)]
 #[class(init, base=Resource)]
-struct Ruleset {
+pub struct Ruleset {
     materials: Array<Gd<Material>>,
     rules: Array<Gd<Rule>>,
     base: Base<Resource>,
 }
 
+#[godot_api]
+impl Ruleset {
+    pub fn create(materials: Array<Gd<Material>>, rules: Array<Gd<Rule>>) -> Gd<Self> {
+        Gd::from_init_fn(|base| Self {
+            materials,
+            rules,
+            base,
+        })
+    }
+    pub fn blank() -> Gd<Self> {
+        Self::create(array![Material::blank()], Array::new())
+    }
+
+    pub fn default_material(&self) -> Gd<Material> {
+        self.materials.get(0).unwrap_or(Material::blank())
+    }
+}
+
 #[derive(GodotClass)]
 #[class(init, base=Resource)]
-struct Rule {
+pub struct Rule {
     #[export]
     input: Gd<Pattern>,
     #[export]
