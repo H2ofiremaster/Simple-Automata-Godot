@@ -16,9 +16,9 @@ pub struct Grid {
     pub cell_scene: Gd<PackedScene>,
 
     cells: Array<Gd<Cell>>,
-    selected_material: Option<Gd<Material>>,
+    pub selected_material: Option<Gd<Material>>,
     ruleset: Gd<Ruleset>,
-    game_board: Option<Gd<Object>>,
+    cell_label: Option<Variant>,
 
     base: Base<GridContainer>,
 }
@@ -28,10 +28,10 @@ impl Grid {
     const SPACING: i32 = 40;
 
     #[func]
-    pub fn initialize(&mut self, ruleset: Gd<Ruleset>, game_board: Gd<Object>) {
+    pub fn initialize(&mut self, ruleset: Gd<Ruleset>, game_board: Variant) {
         self.selected_material = Some(ruleset.bind().default_material());
         self.ruleset = ruleset;
-        self.game_board = Some(game_board);
+        self.cell_label = Some(game_board);
         self.generate();
     }
 
@@ -126,6 +126,19 @@ impl Grid {
             }
         }
     }
+
+    pub fn update_cell_label(&self, cell: Option<Gd<Cell>>, material_changed: bool) {
+        let Some(cell_label) = self.cell_label.clone() else {
+            godot_error!("[Grid::update_cell_label]: 'cell_label' is initialized.");
+            return;
+        };
+        let cell_variant = cell.map(|c| c.to_variant()).unwrap_or(Variant::nil());
+        if material_changed {
+            cell_label.call("update", &[cell_variant]);
+        } else {
+            cell_label.call("update_states", &[cell_variant]);
+        }
+    }
 }
 
 #[godot_api]
@@ -136,7 +149,7 @@ impl IGridContainer for Grid {
             cells: Array::new(),
             selected_material: None,
             ruleset: Ruleset::blank(),
-            game_board: None,
+            cell_label: None,
             base,
         }
     }

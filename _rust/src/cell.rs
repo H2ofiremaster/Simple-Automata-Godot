@@ -1,5 +1,6 @@
 use godot::{
-    classes::{ITextureButton, TextureButton},
+    classes::{ITextureButton, InputEvent, TextureButton},
+    global::MouseButton,
     prelude::*,
 };
 
@@ -84,6 +85,34 @@ impl Cell {
         self.state
             .set(selected_key, possible_values.at(target_index))
     }
+
+    #[func]
+    pub fn on_mouse_entered(&mut self) {
+        let input = Input::singleton();
+        let Some(grid) = self.grid.clone() else {
+            godot_error!("[Cell::on_mouse_entered]: 'grid' is initialized.");
+            return;
+        };
+        let Some(selected_material) = grid.bind().selected_material.clone() else {
+            godot_error!("[Cell::on_mouse_entered]: 'grid' has no selected material.");
+            return;
+        };
+
+        if input.is_mouse_button_pressed(MouseButton::LEFT) {
+            self.material = selected_material;
+            grid.bind().update_cell_label(Some(self.to_gd()), true);
+        }
+    }
+
+    #[func]
+    pub fn on_mouse_exited(&mut self) {
+        if let Some(grid) = self.grid.clone() {
+            grid.bind().update_cell_label(None, true);
+        }
+    }
+
+    #[func]
+    pub fn on_gui_input(&mut self, event: Gd<InputEvent>) {}
 }
 
 #[godot_api]
