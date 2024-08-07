@@ -8,13 +8,13 @@ const CELL_OUTLINE = preload("res://scenes/cell_outline.tscn")
 var cells: Array[Cell];
 var selected_cell_type: CellType;
 var ruleset: Ruleset;
-var game_board: GameBoard;
+var cell_label: CellLabel;
 
 var last_hovered_index: int = -1;
 
-func initialize(init_ruleset: Ruleset, init_game_board: GameBoard) -> void:
+func initialize(init_ruleset: Ruleset, game_board: GameBoard) -> void:
 	self.ruleset = init_ruleset;
-	self.game_board = init_game_board;
+	self.cell_label = self.cell_label;
 	self.selected_cell_type = ruleset.default_type();
 	generate();
 
@@ -106,11 +106,11 @@ func refresh() -> void:
 
 
 func _on_hovered_cell_updated(cell: Cell) -> void:
-	game_board.cell_label.update(cell);
+	cell_label.update(cell);
 
 
 func _on_cell_updated(cell: Cell, type_updated: bool) -> void:
-	if type_updated: game_board.cell_label.update(cell);
-	else: game_board.cell_label.update_states(cell);
+	if type_updated: cell_label.update(cell);
+	else: cell_label.update_states(cell);
 
 

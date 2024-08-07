@@ -49,7 +49,7 @@ impl Pattern {
                 }
             }
         }
-        return true;
+        true
     }
 
     pub fn has_material(&self) -> bool {

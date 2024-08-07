@@ -8,7 +8,7 @@ use crate::grid::Grid;
 #[derive(GodotClass)]
 #[class(base=TextureButton)]
 pub struct Cell {
-    scene: Gd<PackedScene>,
+    pub grid: Option<Gd<Grid>>,
     pub material: Gd<Material>,
     pub state: Dictionary,
     #[var]
@@ -19,29 +19,28 @@ pub struct Cell {
 
 #[godot_api]
 impl Cell {
-    const SCENE_PATH: &'static str = "res://scenes/cell.tscn";
+    pub const SCENE_PATH: &'static str = "res://scenes/cell.tscn";
 
-    pub fn create(material: Gd<Material>, state: Dictionary) -> Gd<Self> {
-        Gd::from_init_fn(|base| Self {
-            scene: load(Self::SCENE_PATH),
-            material,
-            state,
-            selected_state_index: 0,
-            base,
-        })
+    pub fn create(grid: Gd<Grid>, material: Gd<Material>, state: Dictionary) -> Gd<Self> {
+        let mut cell: Gd<Cell> = grid.bind().cell_scene.instantiate_as::<Cell>();
+        cell.bind_mut().grid = Some(grid);
+        cell.bind_mut().material = material;
+        cell.bind_mut().state = state;
+        cell
     }
 
-    pub fn full_clone(&self) -> Gd<Self> {
+    pub fn full_clone(&self, grid: Gd<Grid>) -> Gd<Self> {
         Self::create(
+            grid,
             self.material.bind().full_clone(),
             self.state.duplicate_deep(),
         )
     }
 
-    pub fn default(grid: &Grid) -> Gd<Self> {
-        let default_material = grid.get_ruleset().default_material();
+    pub fn default(grid: Gd<Grid>) -> Gd<Self> {
+        let default_material = grid.bind().get_ruleset().default_material();
         let default_state = default_material.bind().default_state();
-        Self::create(default_material, default_state)
+        Self::create(grid, default_material, default_state)
     }
 
     #[func]
@@ -91,7 +90,7 @@ impl Cell {
 impl ITextureButton for Cell {
     fn init(base: Base<Self::Base>) -> Self {
         Self {
-            scene: load(Self::SCENE_PATH),
+            grid: None,
             material: Material::blank(),
             state: Dictionary::new(),
             selected_state_index: 0,
@@ -147,11 +146,7 @@ impl Material {
     }
 
     pub fn full_clone(&self) -> Gd<Self> {
-        Self::create(
-            self.name.clone(),
-            self.color.clone(),
-            self.states.duplicate_deep(),
-        )
+        Self::create(self.name.clone(), self.color, self.states.duplicate_deep())
     }
 
     pub fn default_state(&self) -> Dictionary {

@@ -1,4 +1,4 @@
-use std::{cmp::max, collections::HashSet};
+use std::cmp::max;
 
 use godot::{
     classes::{GridContainer, IGridContainer},
@@ -13,6 +13,8 @@ use crate::{
 #[derive(GodotClass)]
 #[class(base=GridContainer)]
 pub struct Grid {
+    pub cell_scene: Gd<PackedScene>,
+
     cells: Array<Gd<Cell>>,
     selected_material: Option<Gd<Material>>,
     ruleset: Gd<Ruleset>,
@@ -37,7 +39,7 @@ impl Grid {
     fn generate(&mut self) {
         let columns = self.base().get_columns();
         self.cells
-            .resize(columns.pow(2) as usize, &Cell::default(self));
+            .resize(columns.pow(2) as usize, &Cell::default(self.to_gd()));
         self.fill_default();
 
         self.base_mut()
@@ -57,7 +59,7 @@ impl Grid {
             .iter_shared()
             .for_each(|mut child| child.queue_free());
         for i in 0..self.cells.len() {
-            self.cells.set(i, Cell::default(self))
+            self.cells.set(i, Cell::default(self.to_gd()))
         }
     }
 
@@ -96,7 +98,7 @@ impl Grid {
     pub fn next_generation(&mut self) {
         let cell_count = self.cells.len();
         let mut new_cells: Array<Gd<Cell>> = Array::new();
-        new_cells.resize(cell_count, &Cell::default(self));
+        new_cells.resize(cell_count, &Cell::default(self.to_gd()));
 
         for index in 0..cell_count {
             let mut cell = self.cells.at(index);
@@ -130,11 +132,16 @@ impl Grid {
 impl IGridContainer for Grid {
     fn init(base: Base<Self::Base>) -> Self {
         Self {
+            cell_scene: PackedScene::new_gd(),
             cells: Array::new(),
             selected_material: None,
             ruleset: Ruleset::blank(),
             game_board: None,
             base,
         }
+    }
+
+    fn ready(&mut self) {
+        self.cell_scene = load(Cell::SCENE_PATH);
     }
 }

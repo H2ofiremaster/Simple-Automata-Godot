@@ -35,10 +35,6 @@ impl Ruleset {
         &self.rules
     }
 
-    pub fn get_materials(&self) -> &Array<Gd<Material>> {
-        &self.materials
-    }
-
     pub fn get_material(&self, name: GString) -> Option<Gd<Material>> {
         self.materials
             .iter_shared()
@@ -73,6 +69,8 @@ impl Rule {
             base,
         })
     }
+
+    #[func]
     pub fn full_clone(&self) -> Gd<Self> {
         Self::create(
             self.input.bind().full_clone(),
@@ -102,7 +100,7 @@ impl Rule {
             return cell;
         }
 
-        let mut new_cell: Gd<Cell> = cell.bind().full_clone();
+        let mut new_cell: Gd<Cell> = cell.bind().full_clone(grid.to_gd());
         if self.output.bind().has_material() {
             let material = ruleset
                 .bind()
@@ -119,7 +117,7 @@ impl Rule {
                 .iter_shared()
                 .for_each(|(key, value)| new_cell_state.set(key, value))
         }
-        return new_cell;
+        new_cell
     }
 }
 
@@ -155,7 +153,7 @@ impl Default for Direction {
 
 #[derive(GodotClass)]
 #[class(init, base=Resource)]
-struct Condition {
+pub struct Condition {
     #[export]
     condition_type: ConditionType,
     #[export]
@@ -199,7 +197,7 @@ impl Condition {
             ConditionType::Numeric => {
                 let count: u8 = neighbors
                     .iter_shared()
-                    .filter_map(|cell| cell)
+                    .flatten()
                     .map(|cell| self.pattern.bind().matches(cell) as u8)
                     .sum();
                 self.counts.contains(&count)
