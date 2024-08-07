@@ -2,6 +2,7 @@ use godot::prelude::*;
 
 use crate::{
     cell::{Cell, Material},
+    grid::Grid,
     pattern::Pattern,
 };
 
@@ -9,7 +10,7 @@ use crate::{
 #[class(init, base=Resource)]
 pub struct Ruleset {
     materials: Array<Gd<Material>>,
-    rules: Array<Gd<Rule>>,
+    pub rules: Array<Gd<Rule>>,
     base: Base<Resource>,
 }
 
@@ -28,6 +29,20 @@ impl Ruleset {
 
     pub fn default_material(&self) -> Gd<Material> {
         self.materials.get(0).unwrap_or(Material::blank())
+    }
+
+    pub fn get_rules(&self) -> &Array<Gd<Rule>> {
+        &self.rules
+    }
+
+    pub fn get_materials(&self) -> &Array<Gd<Material>> {
+        &self.materials
+    }
+
+    pub fn get_material(&self, name: GString) -> Option<Gd<Material>> {
+        self.materials
+            .iter_shared()
+            .find(|material| material.bind().get_name() == name)
     }
 }
 
@@ -67,6 +82,44 @@ impl Rule {
                 .map(|c| c.bind().full_clone())
                 .collect(),
         )
+    }
+
+    pub fn transform(
+        &self,
+        cell: Gd<Cell>,
+        index: usize,
+        grid: &Grid,
+        ruleset: Gd<Ruleset>,
+    ) -> Gd<Cell> {
+        if !self.input.bind().matches(cell.clone()) {
+            return cell;
+        }
+        if self
+            .conditions
+            .iter_shared()
+            .any(|condition| !condition.bind().matches(grid.get_neighbors(index as i32)))
+        {
+            return cell;
+        }
+
+        let mut new_cell: Gd<Cell> = cell.bind().full_clone();
+        if self.output.bind().has_material() {
+            let material = ruleset
+                .bind()
+                .get_material(self.output.bind().get_cell_material());
+            if let Some(material) = material {
+                new_cell.bind_mut().material = material;
+            }
+        }
+        if self.output.bind().has_states() {
+            let new_cell_state = &mut new_cell.bind_mut().state;
+            self.output
+                .bind()
+                .get_cell_state()
+                .iter_shared()
+                .for_each(|(key, value)| new_cell_state.set(key, value))
+        }
+        return new_cell;
     }
 }
 
@@ -141,19 +194,21 @@ impl Condition {
         )
     }
 
-    fn matches(&self, neighbors: Array<Gd<Cell>>) -> bool {
+    fn matches(&self, neighbors: Array<Option<Gd<Cell>>>) -> bool {
         match self.condition_type {
             ConditionType::Numeric => {
                 let count: u8 = neighbors
                     .iter_shared()
+                    .filter_map(|cell| cell)
                     .map(|cell| self.pattern.bind().matches(cell) as u8)
                     .sum();
                 self.counts.contains(&count)
             }
-            ConditionType::Directional => self
-                .directions
-                .iter_shared()
-                .any(|dir| self.pattern.bind().matches(neighbors.at(dir.into()))),
+            ConditionType::Directional => self.directions.iter_shared().any(|dir| {
+                neighbors
+                    .at(dir.into())
+                    .is_some_and(|neighbor| self.pattern.bind().matches(neighbor))
+            }),
         }
     }
 }

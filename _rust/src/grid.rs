@@ -1,3 +1,5 @@
+use std::{cmp::max, collections::HashSet};
+
 use godot::{
     classes::{GridContainer, IGridContainer},
     prelude::*,
@@ -21,16 +23,34 @@ pub struct Grid {
 
 #[godot_api]
 impl Grid {
+    const SPACING: i32 = 40;
+
     #[func]
     pub fn initialize(&mut self, ruleset: Gd<Ruleset>, game_board: Gd<Object>) {
+        self.selected_material = Some(ruleset.bind().default_material());
         self.ruleset = ruleset;
         self.game_board = Some(game_board);
+        self.generate();
+    }
+
+    #[func]
+    fn generate(&mut self) {
+        let columns = self.base().get_columns();
+        self.cells
+            .resize(columns.pow(2) as usize, &Cell::default(self));
+        self.fill_default();
+
+        self.base_mut()
+            .add_theme_constant_override("v_separation".into(), max(Self::SPACING / columns, 2));
+        self.base_mut()
+            .add_theme_constant_override("h_separation".into(), max(Self::SPACING / columns, 2));
     }
 
     pub fn get_ruleset(&self) -> GdRef<Ruleset> {
         self.ruleset.bind()
     }
 
+    #[func]
     pub fn fill_default(&mut self) {
         self.base_mut()
             .get_children()
@@ -70,6 +90,39 @@ impl Grid {
             }
         })
         .collect()
+    }
+
+    #[func]
+    pub fn next_generation(&mut self) {
+        let cell_count = self.cells.len();
+        let mut new_cells: Array<Gd<Cell>> = Array::new();
+        new_cells.resize(cell_count, &Cell::default(self));
+
+        for index in 0..cell_count {
+            let mut cell = self.cells.at(index);
+            for rule in self.ruleset.bind().get_rules().iter_shared() {
+                cell = rule
+                    .bind()
+                    .transform(cell, index, self, self.ruleset.clone())
+            }
+        }
+        self.cells = new_cells;
+        self.refresh()
+    }
+
+    fn refresh(&mut self) {
+        let current_children = self.base().get_children();
+        let cells_set: Dictionary = self.cells.iter_shared().map(|c| (c, true)).collect();
+        for mut child in current_children.iter_shared() {
+            if !cells_set.contains_key(child.clone()) {
+                let index = child.get_index();
+                child.queue_free();
+                self.base_mut().remove_child(child);
+                let new_cell = self.cells.at(index as usize);
+                self.base_mut().add_child(new_cell.clone());
+                self.base_mut().move_child(new_cell, index);
+            }
+        }
     }
 }
 
