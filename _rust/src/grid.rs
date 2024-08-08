@@ -6,7 +6,7 @@ use godot::{
 };
 
 use crate::{
-    cell::{Cell, Material},
+    cell::{Cell, CellMaterial},
     ruleset::Ruleset,
 };
 
@@ -16,7 +16,7 @@ pub struct Grid {
     pub cell_scene: Gd<PackedScene>,
 
     cells: Array<Gd<Cell>>,
-    pub selected_material: Option<Gd<Material>>,
+    pub selected_material: Option<Gd<CellMaterial>>,
     ruleset: Gd<Ruleset>,
     cell_label: Option<Variant>,
 

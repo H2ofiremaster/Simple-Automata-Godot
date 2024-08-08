@@ -10,7 +10,7 @@ use crate::grid::Grid;
 #[class(base=TextureButton)]
 pub struct Cell {
     pub grid: Option<Gd<Grid>>,
-    material: Gd<Material>,
+    material: Gd<CellMaterial>,
     pub state: Dictionary,
     #[var]
     pub selected_state_index: u32,
@@ -22,16 +22,16 @@ pub struct Cell {
 impl Cell {
     pub const SCENE_PATH: &'static str = "res://scenes/cell.tscn";
 
-    pub fn get_material(&self) -> Gd<Material> {
+    pub fn get_material(&self) -> Gd<CellMaterial> {
         self.material.clone()
     }
-    pub fn set_material(&mut self, value: Gd<Material>) {
+    pub fn set_material(&mut self, value: Gd<CellMaterial>) {
         self.base_mut().set_modulate(value.bind().color);
         self.material = value;
         self.update_state();
     }
 
-    pub fn create(grid: Gd<Grid>, material: Gd<Material>, state: Dictionary) -> Gd<Self> {
+    pub fn create(grid: Gd<Grid>, material: Gd<CellMaterial>, state: Dictionary) -> Gd<Self> {
         let mut cell: Gd<Cell> = grid.bind().cell_scene.instantiate_as::<Cell>();
         cell.bind_mut().grid = Some(grid);
         cell.bind_mut().set_material(material);
@@ -186,7 +186,7 @@ impl ITextureButton for Cell {
     fn init(base: Base<Self::Base>) -> Self {
         Self {
             grid: None,
-            material: Material::blank(),
+            material: CellMaterial::blank(),
             state: Dictionary::new(),
             selected_state_index: 0,
             base,
@@ -198,7 +198,7 @@ impl ITextureButton for Cell {
 /// Parameter `states` must be a [Dictionary] mapping [GString] to an [Array] of [GString]s.
 #[derive(GodotClass)]
 #[class(base=Resource)]
-pub struct Material {
+pub struct CellMaterial {
     #[export]
     name: GString,
     #[export]
@@ -210,7 +210,7 @@ pub struct Material {
 }
 
 #[godot_api]
-impl Material {
+impl CellMaterial {
     pub fn blank() -> Gd<Self> {
         Gd::from_init_fn(|base| Self {
             name: "Blank".into_godot(),
@@ -232,7 +232,7 @@ impl Material {
         //         }
         //     }
         // }
-        Gd::from_init_fn(|base| Material {
+        Gd::from_init_fn(|base| CellMaterial {
             name,
             color,
             states,
@@ -256,7 +256,7 @@ impl Material {
 }
 
 #[godot_api]
-impl IResource for Material {
+impl IResource for CellMaterial {
     fn init(base: Base<Self::Base>) -> Self {
         Self {
             name: GString::new(),

@@ -1,7 +1,7 @@
 use godot::prelude::*;
 
 use crate::{
-    cell::{Cell, Material},
+    cell::{Cell, CellMaterial},
     grid::Grid,
     pattern::Pattern,
 };
@@ -9,14 +9,14 @@ use crate::{
 #[derive(GodotClass)]
 #[class(init, base=Resource)]
 pub struct Ruleset {
-    materials: Array<Gd<Material>>,
+    materials: Array<Gd<CellMaterial>>,
     pub rules: Array<Gd<Rule>>,
     base: Base<Resource>,
 }
 
 #[godot_api]
 impl Ruleset {
-    pub fn create(materials: Array<Gd<Material>>, rules: Array<Gd<Rule>>) -> Gd<Self> {
+    pub fn create(materials: Array<Gd<CellMaterial>>, rules: Array<Gd<Rule>>) -> Gd<Self> {
         Gd::from_init_fn(|base| Self {
             materials,
             rules,
@@ -24,18 +24,18 @@ impl Ruleset {
         })
     }
     pub fn blank() -> Gd<Self> {
-        Self::create(array![Material::blank()], Array::new())
+        Self::create(array![CellMaterial::blank()], Array::new())
     }
 
-    pub fn default_material(&self) -> Gd<Material> {
-        self.materials.get(0).unwrap_or(Material::blank())
+    pub fn default_material(&self) -> Gd<CellMaterial> {
+        self.materials.get(0).unwrap_or(CellMaterial::blank())
     }
 
     pub fn get_rules(&self) -> &Array<Gd<Rule>> {
         &self.rules
     }
 
-    pub fn get_material(&self, name: GString) -> Option<Gd<Material>> {
+    pub fn get_material(&self, name: GString) -> Option<Gd<CellMaterial>> {
         self.materials
             .iter_shared()
             .find(|material| material.bind().get_name() == name)
