@@ -1,4 +1,4 @@
-class_name Ruleset extends Resource
+class_name GdRuleset extends Resource
 
 const PATH: String = "res://resources/ruleset.tres"
 

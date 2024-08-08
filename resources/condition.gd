@@ -1,4 +1,4 @@
-class_name Condition extends Resource
+class_name GdCondition extends Resource
 
 @export var type: ConditionType = ConditionType.NUMERIC;
 @export var directions: Array[Direction] = [];

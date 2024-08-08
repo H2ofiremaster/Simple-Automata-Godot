@@ -1,4 +1,4 @@
-class_name Rule extends Resource
+class_name GdRule extends Resource
 
 @export var input: GdPattern = GdPattern.new();
 @export var output: GdPattern = GdPattern.new();

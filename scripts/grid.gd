@@ -1,4 +1,4 @@
-class_name Grid extends GridContainer
+class_name GdGrid extends GridContainer
 
 const LINE_COLOR = Color.DIM_GRAY;
 const SPACING = 40;

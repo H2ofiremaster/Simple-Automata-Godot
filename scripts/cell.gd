@@ -1,4 +1,4 @@
-class_name Cell extends TextureButton
+class_name GdCell extends TextureButton
 
 signal hovered_cell_updated(cell: Cell);
 signal updated(cell: Cell, type_updated: bool);
