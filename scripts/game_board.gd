@@ -21,13 +21,13 @@ func _on_ruleset_creator_ruleset_changed(new_ruleset: Ruleset) -> void:
 	for cell in cell_selector.get_children():
 		cell.queue_free();
 	for cell_material in ruleset.materials:
-		var cell_display: CellDisplay = cell_display_scene.create(cell_material, _on_material_selected);
+		var cell_display: CellDisplay = CellDisplay.create(cell_material, _on_material_selected);
 		cell_selector.add_child(cell_display);
 	
 	grid.set_ruleset(ruleset);
-	grid.selected_cell_type = ruleset.default_type();
+	grid.selected_material = ruleset.default_material();
 	grid.fill_default();
-	# print(grid.cells);
+	#print(grid.cells);
 
 
 func _on_material_selected(cell_material: CellMaterial) -> void:

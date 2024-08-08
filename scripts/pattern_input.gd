@@ -32,8 +32,8 @@ func initialize(init_ruleset: Ruleset, init_pattern: Pattern) -> void:
 	if init_pattern == null:
 		pattern = Pattern.new();
 	else:
-		var current_material: CellMaterial = ruleset.get_cell(pattern.cell_name);
-		var index: int = ruleset.cells.find(current_material);
+		var current_material: CellMaterial = ruleset.get_material(pattern.cell_material);
+		var index: int = ruleset.materials.find(current_material);
 		if index == -1: 
 			name_select.selected = 0;
 		else:
@@ -104,9 +104,9 @@ func _on_state_edit_focus_exited() -> void:
 func _on_name_select_item_selected(index: int) -> void:
 	# print("Pattern '%s' updated to:" % pattern)
 	if index == 0:
-		pattern.cell_name = "";
+		pattern.cell_material = "";
 	else:
-		pattern.cell_name = name_select.get_item_text(index);
+		pattern.cell_material = name_select.get_item_text(index);
 	# print(pattern)
 	
 

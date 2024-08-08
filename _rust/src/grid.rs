@@ -79,8 +79,13 @@ impl Grid {
         let cell_count = this.bind().cells.len();
         for i in 0..cell_count {
             let default_cell = Cell::default(this.clone());
-            this.bind_mut().cells.set(i, default_cell);
+            this.bind_mut().cells.set(i, default_cell.clone());
+            this.bind_mut().base_mut().add_child(default_cell);
         }
+        godot_print!(
+            "Filling grid with default cell {}.",
+            Cell::default(this.clone())
+        )
     }
 
     pub fn get_neighbors(&self, index: i32) -> Array<Option<Gd<Cell>>> {

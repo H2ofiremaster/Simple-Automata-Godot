@@ -143,7 +143,7 @@ func _on_add_rule_button_pressed() -> void:
 func _on_add_cell_button_pressed() -> void:
 	var editor: CellEditor = cell_editor_scene.instantiate();
 	var cell_material := CellMaterial.new();
-	selected_ruleset.cells.append(cell_material);
+	selected_ruleset.materials.append(cell_material);
 	cells.add_child(editor);
 	editor.delete_requested.connect(_on_cell_delete_requested);
 	editor.initialize(selected_ruleset, cell_material);

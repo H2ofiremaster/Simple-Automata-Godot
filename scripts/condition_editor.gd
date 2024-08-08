@@ -1,8 +1,8 @@
 class_name ConditionEditor extends Control
 
 enum ConditionType {
-	NUMERIC,
-	DIRECTIONAL
+	NUMERIC = 1,
+	DIRECTIONAL = 2
 }
 
 @export var parent: RuleEditor;
@@ -31,7 +31,7 @@ func initialize(init_parent: RuleEditor, init_ruleset: Ruleset, init_condition: 
 	
 	if condition.condition_type == ConditionType.NUMERIC:
 		_on_numeric_button_pressed();
-	if condition.type == ConditionType.DIRECTIONAL:
+	if condition.condition_type == ConditionType.DIRECTIONAL:
 		_on_directional_button_pressed();
 	
 	pattern_input.initialize(ruleset, condition.pattern);

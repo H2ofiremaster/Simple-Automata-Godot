@@ -192,6 +192,10 @@ impl ITextureButton for Cell {
             base,
         }
     }
+
+    fn to_string(&self) -> GString {
+        format!("Cell({}, {})", self.material, self.state).into_godot()
+    }
 }
 
 /// Represents a material that a cell can be. Contains a name, color, and dictionary mapping state names to all possible values.
@@ -248,7 +252,8 @@ impl CellMaterial {
         self.states
             .iter_shared()
             .filter_map(|(key, value)| {
-                let value: Array<GString> = value.to();
+                godot_print!("[default_state]: Uwrapping stirng array '{}'. Expected type: Array<GString>, Actual type: {:?}.", value, value.get_type());
+                let value: VariantArray = value.to();
                 value.get(0).map(|v| Some((key, v))).unwrap_or(None)
             })
             .collect()

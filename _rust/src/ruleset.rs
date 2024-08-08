@@ -37,10 +37,12 @@ impl Ruleset {
         Self::create("Blank".into(), array![CellMaterial::blank()], Array::new())
     }
 
+    #[func]
     pub fn default_material(&self) -> Gd<CellMaterial> {
         self.materials.get(0).unwrap_or(CellMaterial::blank())
     }
 
+    #[func]
     pub fn get_material(&self, name: GString) -> Option<Gd<CellMaterial>> {
         self.materials
             .iter_shared()
@@ -57,6 +59,8 @@ pub struct Rule {
     output: Gd<Pattern>,
     #[export]
     conditions: Array<Gd<Condition>>,
+    #[export]
+    editor_color: Color,
 
     base: Base<Resource>,
 }
@@ -67,11 +71,13 @@ impl Rule {
         input: Gd<Pattern>,
         output: Gd<Pattern>,
         conditions: Array<Gd<Condition>>,
+        editor_color: Color,
     ) -> Gd<Self> {
         Gd::from_init_fn(|base| Self {
             input,
             output,
             conditions,
+            editor_color,
             base,
         })
     }
@@ -85,6 +91,7 @@ impl Rule {
                 .iter_shared()
                 .map(|c| c.bind().full_clone())
                 .collect(),
+            self.editor_color,
         )
     }
 
@@ -168,6 +175,8 @@ pub struct Condition {
     counts: Array<u8>,
     #[export]
     pattern: Gd<Pattern>,
+    #[export]
+    display: GString,
 
     base: Base<Resource>,
 }
@@ -179,12 +188,14 @@ impl Condition {
         directions: Array<u8>,
         counts: Array<u8>,
         pattern: Gd<Pattern>,
+        display: GString,
     ) -> Gd<Self> {
         Gd::from_init_fn(|base| Self {
             condition_type,
             directions,
             counts,
             pattern,
+            display,
             base,
         })
     }
@@ -195,6 +206,7 @@ impl Condition {
             self.directions.duplicate_shallow(),
             self.counts.duplicate_shallow(),
             self.pattern.bind().full_clone(),
+            self.display.clone(),
         )
     }
 
