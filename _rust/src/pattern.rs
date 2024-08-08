@@ -2,6 +2,8 @@ use godot::prelude::*;
 
 use crate::cell::Cell;
 
+/// A pattern used to match a particular group of cells.
+/// Either 'cell_material' or 'cell_state' can be empty to represent anything.
 #[derive(GodotClass)]
 #[class(tool, base=Resource)]
 pub struct Pattern {
@@ -58,6 +60,56 @@ impl Pattern {
 
     pub fn has_states(&self) -> bool {
         !self.cell_state.is_empty()
+    }
+
+    /// Validates a given state string.
+    /// Returns an empty string if it's valid, and returns the first offending section if not.
+    #[func]
+    fn validate_state(state_string: GString) -> GString {
+        let trimmed_state = state_string.to_string().replace(' ', "");
+        if state_string.is_empty() {
+            return GString::new();
+        }
+        if !trimmed_state.contains('=') {
+            return state_string;
+        }
+
+        let states = trimmed_state.split(',');
+        for state in states {
+            let parts: Vec<&str> = state.split('=').collect();
+            if parts.len() != 2 {
+                return state.into();
+            }
+        }
+
+        GString::new()
+    }
+
+    /// Parses a given state string, discarding anything invalid with an error message.
+    /// Use `validate_state` first to handle any errors properly.
+    #[func]
+    fn parse_state(state_string: GString) -> Dictionary {
+        let trimmed_state = state_string.to_string().replace(" ", "");
+        if state_string.is_empty() {
+            return Dictionary::new();
+        }
+        if !trimmed_state.contains('=') {
+            godot_error!("State '{state_string}' is invalid.");
+            return Dictionary::new();
+        }
+
+        let states = trimmed_state.split(",");
+        let mut state_dictionary: Dictionary = Dictionary::new();
+        for state in states {
+            let parts: Vec<&str> = state.split("=").collect();
+            if parts.len() != 2 {
+                godot_error!("State '{state}' is invalid.")
+            } else {
+                state_dictionary.set(parts[0], parts[1]);
+            }
+        }
+
+        return state_dictionary;
     }
 }
 

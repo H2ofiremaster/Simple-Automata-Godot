@@ -1,9 +1,3 @@
-[gd_resource type="Rule" load_steps=3 format=3 uid="uid://b8v1guicbwd81"]
-
-[sub_resource type="Pattern" id="Pattern_b1gcb"]
-
-[sub_resource type="Pattern" id="Pattern_o0767"]
+[gd_resource type="Resource" format=3 uid="uid://b8v1guicbwd81"]
 
 [resource]
-input = SubResource("Pattern_b1gcb")
-output = SubResource("Pattern_o0767")

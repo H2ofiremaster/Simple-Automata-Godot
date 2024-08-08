@@ -4,7 +4,7 @@ signal delete_requested(to_delete: CellEditor);
 signal cell_name_updated()
 
 @export var ruleset: Ruleset;
-@export var type: CellType;
+@export var type: CellMaterial;
 
 # Nodes
 @onready var preview: TextureRect = $MarginContainer/MainContainer/PreviewContainer/Preview
@@ -14,7 +14,7 @@ signal cell_name_updated()
 @onready var state_name_input: LineEdit = %StateNameInput; 
 @onready var state_edit: TextEdit = %StateEdit; 
 
-func initialize(init_ruleset: Ruleset, init_type: CellType) -> void:
+func initialize(init_ruleset: Ruleset, init_type: CellMaterial) -> void:
 	ruleset = init_ruleset;
 	type = init_type;
 	

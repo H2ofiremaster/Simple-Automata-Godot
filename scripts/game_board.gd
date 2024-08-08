@@ -20,11 +20,9 @@ func _on_ruleset_creator_ruleset_changed(new_ruleset: Ruleset) -> void:
 	ruleset = new_ruleset;
 	for cell in cell_selector.get_children():
 		cell.queue_free();
-	for cell in ruleset.cells:
-		var cell_display: CellDisplay = cell_display_scene.instantiate();
+	for material in ruleset.materials:
+		var cell_display: CellDisplay = cell_display_scene.create(material, _on_material_selected);
 		cell_selector.add_child(cell_display);
-		cell_display.cell_type_selected.connect(_on_cell_type_selected);
-		cell_display.initialize(cell);
 	
 	grid.ruleset = ruleset;
 	grid.selected_cell_type = ruleset.default_type();
@@ -32,7 +30,7 @@ func _on_ruleset_creator_ruleset_changed(new_ruleset: Ruleset) -> void:
 	# print(grid.cells);
 
 
-func _on_cell_type_selected(cell_type: CellType) -> void:
-	grid.selected_cell_type = cell_type;
+func _on_material_selected(material: CellMaterial) -> void:
+	grid.selected_material = material;
 	# print("Selected CellType: " + str(cell_type));
 

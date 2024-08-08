@@ -6,8 +6,8 @@ const ERROR_LABEL_MESSAGE: String = "Invalid state definition: ";
 @export var default_text: String;
 @export var can_invert: bool = false;
 
-var pattern: GdPattern;
-var selected_cell_type: CellType;
+var pattern: Pattern;
+var selected_material: CellMaterial;
 
 @onready var name_select: OptionButton = $Margins/Container/StatusBar/NameSelect
 @onready var expand_button: Button = $Margins/Container/StatusBar/ExpandButton
@@ -32,13 +32,13 @@ func initialize(init_ruleset: Ruleset, init_pattern: Pattern) -> void:
 	if init_pattern == null:
 		pattern = Pattern.new();
 	else:
-		var current_cell: CellMaterial = ruleset.get_cell(pattern.cell_name);
-		var index: int = ruleset.cells.find(current_cell);
+		var current_material: CellMaterial = ruleset.get_cell(pattern.cell_name);
+		var index: int = ruleset.cells.find(current_material);
 		if index == -1: 
 			name_select.selected = 0;
 		else:
 			name_select.selected = index + 2;
-			selected_cell_type = current_cell;
+			selected_material = current_material;
 		
 		var state: Dictionary = pattern.cell_state;
 		var state_array: Array[String] = [];
@@ -87,9 +87,9 @@ func _on_expand_button_toggled(toggled_on: bool) -> void:
 
 
 func _on_state_edit_text_submitted(new_text: String) -> void:
-	var error := GdPattern.validate_state(new_text);
+	var error := Pattern.validate_state(new_text);
 	if error == "":
-		var state_dict := GdPattern.parse_state(new_text)
+		var state_dict := Pattern.parse_state(new_text)
 		pattern.cell_state = state_dict;
 		error_label.visible = false;
 	else:

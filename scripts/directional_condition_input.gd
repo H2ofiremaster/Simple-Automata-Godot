@@ -1,5 +1,15 @@
 class_name DirectionalConditionInput extends GridContainer
 
+enum Direction {
+	NORTHEAST,
+	NORTH,
+	NORTHWEST,
+	EAST,
+	WEST,
+	SOUTHEAST,
+	SOUTH,
+	SOUTHWEST,
+}
 
 
 @export var editor: ConditionEditor
@@ -22,19 +32,19 @@ func initialize() -> void:
 
 func get_button(direction: Direction) -> Button:
 	match direction:
-		Condition.Direction.NORTH: return north_button;
-		Condition.Direction.SOUTH: return south_button;
-		Condition.Direction.EAST: return east_button;
-		Condition.Direction.WEST: return west_button;
-		Condition.Direction.NORTHEAST: return northeast_button;
-		Condition.Direction.SOUTHEAST: return southeast_button;
-		Condition.Direction.NORTHWEST: return northwest_button;
-		Condition.Direction.SOUTHWEST: return southwest_button;
+		Direction.NORTH: return north_button;
+		Direction.SOUTH: return south_button;
+		Direction.EAST: return east_button;
+		Direction.WEST: return west_button;
+		Direction.NORTHEAST: return northeast_button;
+		Direction.SOUTHEAST: return southeast_button;
+		Direction.NORTHWEST: return northwest_button;
+		Direction.SOUTHWEST: return southwest_button;
 	printerr("Code reached unreachable point!");
 	return null;
 
 
-func toggle_direction(direction: Condition.Direction, toggle_on: bool) -> void:
+func toggle_direction(direction: Direction, toggle_on: bool) -> void:
 	var directions := editor.condition.directions;
 	var desired_index := directions.find(direction);
 	if toggle_on:
@@ -45,40 +55,40 @@ func toggle_direction(direction: Condition.Direction, toggle_on: bool) -> void:
 			directions.remove_at(desired_index);
 
 func _on_northwest_toggled(toggled_on: bool) -> void:
-	toggle_direction(Condition.Direction.NORTHWEST, toggled_on);
+	toggle_direction(Direction.NORTHWEST, toggled_on);
 	northwest_button.modulate = Color.AQUA if toggled_on else Color.WHITE;
 
 
 func _on_north_toggled(toggled_on: bool) -> void:
-	toggle_direction(Condition.Direction.NORTH, toggled_on);
+	toggle_direction(Direction.NORTH, toggled_on);
 	north_button.modulate = Color.AQUA if toggled_on else Color.WHITE;
 
 
 func _on_northeast_toggled(toggled_on: bool) -> void:
-	toggle_direction(Condition.Direction.NORTHEAST, toggled_on);
+	toggle_direction(Direction.NORTHEAST, toggled_on);
 	northeast_button.modulate = Color.AQUA if toggled_on else Color.WHITE;
 
 
 func _on_west_toggled(toggled_on: bool) -> void:
-	toggle_direction(Condition.Direction.WEST, toggled_on);
+	toggle_direction(Direction.WEST, toggled_on);
 	west_button.modulate = Color.AQUA if toggled_on else Color.WHITE;
 
 
 func _on_east_toggled(toggled_on: bool) -> void:
-	toggle_direction(Condition.Direction.EAST, toggled_on);
+	toggle_direction(Direction.EAST, toggled_on);
 	east_button.modulate = Color.AQUA if toggled_on else Color.WHITE;
 
 
 func _on_southwest_toggled(toggled_on: bool) -> void:
-	toggle_direction(Condition.Direction.SOUTHWEST, toggled_on);
+	toggle_direction(Direction.SOUTHWEST, toggled_on);
 	southwest_button.modulate = Color.AQUA if toggled_on else Color.WHITE;
 
 
 func _on_south_toggled(toggled_on: bool) -> void:
-	toggle_direction(Condition.Direction.SOUTH, toggled_on);
+	toggle_direction(Direction.SOUTH, toggled_on);
 	south_button.modulate = Color.AQUA if toggled_on else Color.WHITE;
 
 
 func _on_southeast_toggled(toggled_on: bool) -> void:
-	toggle_direction(Condition.Direction.SOUTHEAST, toggled_on);
+	toggle_direction(Direction.SOUTHEAST, toggled_on);
 	southeast_button.modulate = Color.AQUA if toggled_on else Color.WHITE;

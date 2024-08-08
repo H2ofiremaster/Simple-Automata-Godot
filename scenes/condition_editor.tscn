@@ -1,6 +1,5 @@
 [gd_scene load_steps=11 format=3 uid="uid://dpx080csyd7fn"]
 
-[ext_resource type="Script" path="res://scripts/condition_editor.gd" id="1_m7f1s"]
 [ext_resource type="StyleBox" uid="uid://c4higkyqc0n2f" path="res://styles/red_button.tres" id="2_8kllx"]
 [ext_resource type="StyleBox" uid="uid://cpq2tagx7jlgd" path="res://styles/red_button_hover.tres" id="3_fk5r5"]
 [ext_resource type="Texture2D" uid="uid://bywqnirn63k7k" path="res://sprites/numeric_condition.svg" id="3_osqq7"]
@@ -12,7 +11,6 @@
 [ext_resource type="PackedScene" uid="uid://b5afhyldsq2xg" path="res://scenes/pattern_input.tscn" id="6_m5yiq"]
 
 [node name="ConditionEditor" type="PanelContainer"]
-script = ExtResource("1_m7f1s")
 
 [node name="Margins" type="MarginContainer" parent="."]
 layout_mode = 2

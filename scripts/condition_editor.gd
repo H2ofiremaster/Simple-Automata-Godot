@@ -1,5 +1,10 @@
 class_name ConditionEditor extends Control
 
+enum ConditionType {
+	NUMERIC,
+	DIRECTIONAL
+}
+
 @export var parent: RuleEditor;
 @export var ruleset: Ruleset;
 @export var condition: Condition;
@@ -10,6 +15,11 @@ class_name ConditionEditor extends Control
 @onready var numeric_button: Button = $Margins/OuterContainer/TypeSelector/NumericButton
 @onready var directional_button: Button = $Margins/OuterContainer/TypeSelector/DirectionalButton
 
+func _ready() -> void:
+	ruleset = load("res://resources/blank_ruleset.tres");
+	condition = load("res://resources/condition.tres");
+	parent = RuleEditor.new();
+
 ## Initializes this condition editor.
 func initialize(init_parent: RuleEditor, init_ruleset: Ruleset, init_condition: Condition) -> void:
 	parent = init_parent;
@@ -19,9 +29,9 @@ func initialize(init_parent: RuleEditor, init_ruleset: Ruleset, init_condition: 
 	#if condition.pattern == null:
 		#condition.pattern = Pattern.new();
 	
-	if condition.type == Condition.ConditionType.NUMERIC:
+	if condition.condition_type == ConditionType.NUMERIC:
 		_on_numeric_button_pressed();
-	if condition.type == Condition.ConditionType.DIRECTIONAL:
+	if condition.type == ConditionType.DIRECTIONAL:
 		_on_directional_button_pressed();
 	
 	pattern_input.initialize(ruleset, condition.pattern);
@@ -32,7 +42,7 @@ func initialize(init_parent: RuleEditor, init_ruleset: Ruleset, init_condition: 
 func _on_numeric_button_pressed() -> void:
 	numeric_button.button_pressed = true;
 	directional_button.button_pressed = false;
-	condition.type = Condition.ConditionType.NUMERIC;
+	condition.condition_type = ConditionType.NUMERIC;
 	number_input.visible = true;
 	directional_input.visible = false;
 
@@ -40,7 +50,7 @@ func _on_numeric_button_pressed() -> void:
 func _on_directional_button_pressed() -> void:
 	directional_button.button_pressed = true;
 	numeric_button.button_pressed = false;
-	condition.type = Condition.ConditionType.DIRECTIONAL;
+	condition.condition_type = ConditionType.DIRECTIONAL;
 	directional_input.visible = true;
 	number_input.visible = false;
 	

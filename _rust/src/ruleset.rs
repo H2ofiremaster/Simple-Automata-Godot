@@ -139,7 +139,7 @@ impl Default for ConditionType {
     }
 }
 
-#[derive(GodotConvert, Var, Export)]
+#[derive(GodotConvert, Var, Export, Debug)]
 #[godot(via=u8)]
 enum Direction {
     Northeast,
@@ -168,8 +168,6 @@ pub struct Condition {
     counts: Array<u8>,
     #[export]
     pattern: Gd<Pattern>,
-    #[export]
-    test_dir: Direction,
 
     base: Base<Resource>,
 }
@@ -187,7 +185,6 @@ impl Condition {
             directions,
             counts,
             pattern,
-            test_dir: Direction::default(),
             base,
         })
     }

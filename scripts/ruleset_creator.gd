@@ -20,7 +20,7 @@ var rulesets: Array[Ruleset] = [];
 @onready var game_board: GameBoard = $"../../GameBoard"
 
 
-@onready var ruleset_resource: Ruleset = ResourceLoader.load(Ruleset.PATH, "Ruleset");
+@onready var ruleset_resource: Ruleset = ResourceLoader.load("res://resources/ruleset.tres", "Ruleset");
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -122,12 +122,12 @@ func _on_ruleset_selector_item_selected(index: int) -> void:
 	ruleset_name.text = selected_ruleset.name;
 	add_cell_button.disabled = false;
 	add_rule_button.disabled = false;
-	for cell in selected_ruleset.cells:
+	for material in selected_ruleset.materials:
 		var editor: CellEditor = cell_editor_scene.instantiate();
 		cells.add_child(editor);
 		editor.delete_requested.connect(_on_cell_delete_requested);
 		editor.cell_name_updated.connect(_on_cell_name_updated);
-		editor.initialize(selected_ruleset, cell);
+		editor.initialize(selected_ruleset, material);
 	for rule in selected_ruleset.rules:
 		add_rule_editor(rule);
 	disable_rule_move_buttons()
@@ -141,18 +141,18 @@ func _on_add_rule_button_pressed() -> void:
 
 func _on_add_cell_button_pressed() -> void:
 	var editor: CellEditor = cell_editor_scene.instantiate();
-	var cell := CellType.new();
-	selected_ruleset.cells.append(cell);
+	var material := CellMaterial.new();
+	selected_ruleset.cells.append(material);
 	cells.add_child(editor);
 	editor.delete_requested.connect(_on_cell_delete_requested);
-	editor.initialize(selected_ruleset, cell);
+	editor.initialize(selected_ruleset, material);
 
 
 func _on_cell_delete_requested(to_delete: CellEditor) -> void:
 	# print("a");
-	var index := selected_ruleset.cells.find(to_delete.type);
+	var index := selected_ruleset.materials.find(to_delete.type);
 	if index != -1:
-		selected_ruleset.cells.remove_at(index);
+		selected_ruleset.materials.remove_at(index);
 	to_delete.queue_free();
 
 
