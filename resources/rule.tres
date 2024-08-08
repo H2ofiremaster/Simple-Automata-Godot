@@ -1,6 +1,9 @@
-[gd_resource type="Resource" load_steps=2 format=3 uid="uid://dj1xn5pyhshv4"]
+[gd_resource type="Rule" load_steps=3 format=3 uid="uid://b8v1guicbwd81"]
 
-[ext_resource type="Script" path="res://resources/rule.gd" id="1_7w3e2"]
+[sub_resource type="Pattern" id="Pattern_b1gcb"]
+
+[sub_resource type="Pattern" id="Pattern_o0767"]
 
 [resource]
-script = ExtResource("1_7w3e2")
+input = SubResource("Pattern_b1gcb")
+output = SubResource("Pattern_o0767")

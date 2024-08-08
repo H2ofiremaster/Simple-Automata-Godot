@@ -1,0 +1,5 @@
+[gd_resource type="CellMaterial" format=3 uid="uid://djdcnqh1v6hme"]
+
+[resource]
+name = "Blank"
+color = Color(1, 1, 1, 1)

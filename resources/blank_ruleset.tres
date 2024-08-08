@@ -1,10 +1,3 @@
-[gd_resource type="Resource" script_class="Ruleset" load_steps=3 format=3 uid="uid://b4rastyckeffm"]
-
-[ext_resource type="Script" path="res://resources/ruleset.gd" id="1_8f6jj"]
-[ext_resource type="Resource" uid="uid://drdwb44syw65p" path="res://resources/blank_cell_type.tres" id="1_oxse3"]
+[gd_resource type="Ruleset" format=3 uid="uid://bmhbox7bx8q3x"]
 
 [resource]
-script = ExtResource("1_8f6jj")
-name = "Blank"
-cells = Array[Resource("res://resources/cell_type.gd")]([ExtResource("1_oxse3")])
-rules = Array[Resource("res://resources/rule.gd")]([])

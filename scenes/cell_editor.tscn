@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/cell_editor.gd" id="1_8r8nk"]
 [ext_resource type="Texture2D" uid="uid://c68a6k16yw0ik" path="res://sprites/blank.png" id="1_rs2qj"]
-[ext_resource type="Resource" uid="uid://3snu8jifmoc6" path="res://resources/test_cell_type.tres" id="2_iejn3"]
+[ext_resource type="CellMaterial" uid="uid://bd472gmtrsbpc" path="res://resources/test_material.tres" id="2_iejn3"]
 [ext_resource type="StyleBox" uid="uid://c4higkyqc0n2f" path="res://styles/red_button.tres" id="3_i8emw"]
 [ext_resource type="StyleBox" uid="uid://cpq2tagx7jlgd" path="res://styles/red_button_hover.tres" id="4_tjml0"]
 [ext_resource type="StyleBox" uid="uid://v4drwcklu7l7" path="res://styles/red_button_pressed.tres" id="5_s0dm2"]

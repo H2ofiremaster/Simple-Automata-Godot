@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://scripts/rule_editor.gd" id="1_eflva"]
 [ext_resource type="StyleBox" uid="uid://bois4h0hsdf7c" path="res://styles/white_panel.tres" id="1_jiaxo"]
 [ext_resource type="StyleBox" uid="uid://c4higkyqc0n2f" path="res://styles/red_button.tres" id="2_3jw2m"]
-[ext_resource type="Resource" uid="uid://p0giqu8c211l" path="res://resources/test_ruleset.tres" id="2_vh0im"]
+[ext_resource type="Ruleset" uid="uid://r4xubcnraomk" path="res://resources/test_ruleset.tres" id="2_vh0im"]
 [ext_resource type="StyleBox" uid="uid://cpq2tagx7jlgd" path="res://styles/red_button_hover.tres" id="3_pldu7"]
 [ext_resource type="StyleBox" uid="uid://v4drwcklu7l7" path="res://styles/red_button_pressed.tres" id="4_f7oyp"]
 [ext_resource type="Texture2D" uid="uid://bp436i44nmr4q" path="res://sprites/trash.svg" id="4_x42u6"]
