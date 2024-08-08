@@ -1,6 +1,6 @@
-[gd_resource type="Resource" load_steps=2 format=3 uid="uid://dkb7eudfrde60"]
+[gd_resource type="Condition" load_steps=2 format=3 uid="uid://d4bcb4b41beyj"]
 
-[ext_resource type="Script" path="res://resources/condition.gd" id="1_fxcmi"]
+[sub_resource type="Pattern" id="Pattern_25aj0"]
 
 [resource]
-script = ExtResource("1_fxcmi")
+pattern = SubResource("Pattern_25aj0")

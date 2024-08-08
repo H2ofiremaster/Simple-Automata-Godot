@@ -1,9 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://b5v618ff5eut3"]
+[gd_scene load_steps=2 format=3 uid="uid://b5v618ff5eut3"]
 
 [ext_resource type="Texture2D" uid="uid://c68a6k16yw0ik" path="res://sprites/blank.png" id="1_lapy7"]
-[ext_resource type="Script" path="res://scripts/cell.gd" id="1_ukqhg"]
 
-[node name="Cell" type="TextureButton"]
+[node name="Cell" type="Cell"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -18,8 +17,3 @@ texture_disabled = ExtResource("1_lapy7")
 texture_focused = ExtResource("1_lapy7")
 ignore_texture_size = true
 stretch_mode = 0
-script = ExtResource("1_ukqhg")
-
-[connection signal="gui_input" from="." to="." method="_on_gui_input"]
-[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
-[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
