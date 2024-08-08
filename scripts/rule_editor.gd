@@ -84,7 +84,7 @@ func _on_collapse_button_toggled(toggled_on: bool) -> void:
 
 func _on_copy_button_pressed() -> void:
 	var index := parent.selected_ruleset.rules.find(rule);
-	var clone := rule.clone();
+	var clone := rule.full_clone();
 	parent.selected_ruleset.rules.insert(index, clone);
 	parent.add_rule_editor(clone, index);
 	

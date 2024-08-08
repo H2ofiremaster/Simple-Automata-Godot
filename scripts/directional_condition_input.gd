@@ -20,7 +20,7 @@ func initialize() -> void:
 			get_button(direction).button_pressed = true;
 
 
-func get_button(direction: Condition.Direction) -> Button:
+func get_button(direction: Direction) -> Button:
 	match direction:
 		Condition.Direction.NORTH: return north_button;
 		Condition.Direction.SOUTH: return south_button;

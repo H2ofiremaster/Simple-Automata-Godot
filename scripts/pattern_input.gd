@@ -22,7 +22,7 @@ func _ready() -> void:
 	name_select.set_item_text(0, default_text);
 
 ## Initializes this RuleEditor.
-func initialize(init_ruleset: Ruleset, init_pattern: GdPattern) -> void:
+func initialize(init_ruleset: Ruleset, init_pattern: Pattern) -> void:
 	ruleset = init_ruleset;
 	pattern = init_pattern;
 	update_cell_names();
@@ -30,9 +30,9 @@ func initialize(init_ruleset: Ruleset, init_pattern: GdPattern) -> void:
 	not_button.visible = can_invert;
 	
 	if init_pattern == null:
-		pattern = GdPattern.new();
+		pattern = Pattern.new();
 	else:
-		var current_cell: CellType = ruleset.get_cell(pattern.cell_name);
+		var current_cell: CellMaterial = ruleset.get_cell(pattern.cell_name);
 		var index: int = ruleset.cells.find(current_cell);
 		if index == -1: 
 			name_select.selected = 0;
@@ -67,8 +67,8 @@ func initialize(init_ruleset: Ruleset, init_pattern: GdPattern) -> void:
 func update_cell_names() -> void:
 	while name_select.item_count > 2:
 		name_select.remove_item(2);
-	for cell in ruleset.cells:
-		name_select.add_item(cell.name);
+	for material in ruleset.materials:
+		name_select.add_item(material.name);
 
 # Signals
 
@@ -77,7 +77,7 @@ func _on_expand_button_toggled(toggled_on: bool) -> void:
 		expand_button.text = "]";
 		state_edit.visible = true;
 		left_bracket.visible = true;
-		var dict := GdPattern.parse_state(state_edit.text);
+		var dict := Pattern.parse_state(state_edit.text);
 		pattern.cell_state = dict;
 	else:
 		expand_button.text = "[ . . . ]" if state_edit.text != "" else "[]";

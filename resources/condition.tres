@@ -1,6 +1,3 @@
-[gd_resource type="Condition" load_steps=2 format=3 uid="uid://d4bcb4b41beyj"]
-
-[sub_resource type="Pattern" id="Pattern_25aj0"]
+[gd_resource type="Resource" format=3 uid="uid://d4bcb4b41beyj"]
 
 [resource]
-pattern = SubResource("Pattern_25aj0")

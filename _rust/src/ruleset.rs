@@ -168,6 +168,8 @@ pub struct Condition {
     counts: Array<u8>,
     #[export]
     pattern: Gd<Pattern>,
+    #[export]
+    test_dir: Direction,
 
     base: Base<Resource>,
 }
@@ -185,6 +187,7 @@ impl Condition {
             directions,
             counts,
             pattern,
+            test_dir: Direction::default(),
             base,
         })
     }
