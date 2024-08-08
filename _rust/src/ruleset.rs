@@ -9,30 +9,36 @@ use crate::{
 #[derive(GodotClass)]
 #[class(init, base=Resource)]
 pub struct Ruleset {
+    #[export]
+    name: GString,
+    #[export]
     materials: Array<Gd<CellMaterial>>,
+    #[export]
     pub rules: Array<Gd<Rule>>,
+
     base: Base<Resource>,
 }
 
 #[godot_api]
 impl Ruleset {
-    pub fn create(materials: Array<Gd<CellMaterial>>, rules: Array<Gd<Rule>>) -> Gd<Self> {
+    pub fn create(
+        name: GString,
+        materials: Array<Gd<CellMaterial>>,
+        rules: Array<Gd<Rule>>,
+    ) -> Gd<Self> {
         Gd::from_init_fn(|base| Self {
+            name,
             materials,
             rules,
             base,
         })
     }
     pub fn blank() -> Gd<Self> {
-        Self::create(array![CellMaterial::blank()], Array::new())
+        Self::create("Blank".into(), array![CellMaterial::blank()], Array::new())
     }
 
     pub fn default_material(&self) -> Gd<CellMaterial> {
         self.materials.get(0).unwrap_or(CellMaterial::blank())
-    }
-
-    pub fn get_rules(&self) -> &Array<Gd<Rule>> {
-        &self.rules
     }
 
     pub fn get_material(&self, name: GString) -> Option<Gd<CellMaterial>> {
