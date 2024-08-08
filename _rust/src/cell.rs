@@ -1,5 +1,5 @@
 use godot::{
-    classes::{ITextureButton, InputEvent, TextureButton},
+    classes::{ITextureButton, InputEvent, InputEventMouseButton, TextureButton},
     global::MouseButton,
     prelude::*,
 };
@@ -10,7 +10,7 @@ use crate::grid::Grid;
 #[class(base=TextureButton)]
 pub struct Cell {
     pub grid: Option<Gd<Grid>>,
-    pub material: Gd<Material>,
+    material: Gd<Material>,
     pub state: Dictionary,
     #[var]
     pub selected_state_index: u32,
@@ -22,10 +22,19 @@ pub struct Cell {
 impl Cell {
     pub const SCENE_PATH: &'static str = "res://scenes/cell.tscn";
 
+    pub fn get_material(&self) -> Gd<Material> {
+        self.material.clone()
+    }
+    pub fn set_material(&mut self, value: Gd<Material>) {
+        self.base_mut().set_modulate(value.bind().color);
+        self.material = value;
+        self.update_state();
+    }
+
     pub fn create(grid: Gd<Grid>, material: Gd<Material>, state: Dictionary) -> Gd<Self> {
         let mut cell: Gd<Cell> = grid.bind().cell_scene.instantiate_as::<Cell>();
         cell.bind_mut().grid = Some(grid);
-        cell.bind_mut().material = material;
+        cell.bind_mut().set_material(material);
         cell.bind_mut().state = state;
         cell
     }
@@ -42,6 +51,16 @@ impl Cell {
         let default_material = grid.bind().get_ruleset().default_material();
         let default_state = default_material.bind().default_state();
         Self::create(grid, default_material, default_state)
+    }
+
+    pub fn update_state(&mut self) {
+        let mut new_state = self.material.bind().default_state();
+        for key in self.state.keys_shared() {
+            if new_state.contains_key(key.clone()) {
+                new_state.set(key.clone(), self.state.at(key))
+            }
+        }
+        self.state = new_state;
     }
 
     #[func]
@@ -99,7 +118,7 @@ impl Cell {
         };
 
         if input.is_mouse_button_pressed(MouseButton::LEFT) {
-            self.material = selected_material;
+            self.set_material(selected_material);
             grid.bind().update_cell_label(Some(self.to_gd()), true);
         }
     }
@@ -112,7 +131,54 @@ impl Cell {
     }
 
     #[func]
-    pub fn on_gui_input(&mut self, event: Gd<InputEvent>) {}
+    pub fn on_gui_input(&mut self, event: Gd<InputEvent>) {
+        let Ok(mouse_button_event) = event.try_cast::<InputEventMouseButton>() else {
+            return;
+        };
+        if !mouse_button_event.is_pressed() {
+            return;
+        }
+
+        let Some(grid) = self.grid.clone() else {
+            godot_error!("[Cell::on_gui_input]: 'grid' is not initialized.");
+            return;
+        };
+
+        let material_changed: bool = match mouse_button_event.get_button_index() {
+            MouseButton::LEFT => {
+                let Some(selected_material) = grid.bind().selected_material.clone() else {
+                    godot_error!(
+                        "[Cell::on_gui_input]: 'grid' does not have a 'selected_material'."
+                    );
+                    return;
+                };
+                self.set_material(selected_material);
+                true
+            }
+            MouseButton::RIGHT => {
+                self.set_material(grid.bind().get_ruleset().default_material());
+                true
+            }
+            MouseButton::MIDDLE => {
+                self.selected_state_index += 1;
+                if (self.selected_state_index as usize) >= self.state.keys_array().len() {
+                    self.selected_state_index = 0;
+                }
+                false
+            }
+            MouseButton::WHEEL_UP => {
+                self.cycle_state(1);
+                false
+            }
+            MouseButton::WHEEL_DOWN => {
+                self.cycle_state(-1);
+                false
+            }
+            _ => return,
+        };
+        grid.bind()
+            .update_cell_label(Some(self.to_gd()), material_changed);
+    }
 }
 
 #[godot_api]
@@ -136,7 +202,7 @@ pub struct Material {
     #[export]
     name: GString,
     #[export]
-    color: Color,
+    pub color: Color,
     #[export]
     states: Dictionary,
 

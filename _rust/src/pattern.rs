@@ -39,7 +39,7 @@ impl Pattern {
         self.inverted ^ is_match
     }
     fn matches_absolute(&self, cell: Gd<Cell>) -> bool {
-        if self.has_material() && cell.bind().material.get_name() != self.cell_material {
+        if self.has_material() && cell.bind().get_material().get_name() != self.cell_material {
             return false;
         }
         if self.has_states() {

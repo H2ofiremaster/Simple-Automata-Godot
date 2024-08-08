@@ -106,7 +106,7 @@ impl Rule {
                 .bind()
                 .get_material(self.output.bind().get_cell_material());
             if let Some(material) = material {
-                new_cell.bind_mut().material = material;
+                new_cell.bind_mut().set_material(material);
             }
         }
         if self.output.bind().has_states() {
