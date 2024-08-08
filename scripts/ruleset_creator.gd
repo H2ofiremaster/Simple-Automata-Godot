@@ -30,10 +30,11 @@ func _ready() -> void:
 		dir = DirAccess.open(RULESET_PATH);
 	var ruleset_paths := dir.get_files();
 	for path in ruleset_paths:
+		print(RULESET_PATH + path);
 		var resource := ResourceLoader.load(RULESET_PATH + path, "Ruleset");
 		rulesets.append(resource);
 	for ruleset in rulesets:
-		# print(ruleset);
+		print(ruleset);
 		ruleset_selector.add_item(ruleset.name);
 
 
@@ -122,12 +123,12 @@ func _on_ruleset_selector_item_selected(index: int) -> void:
 	ruleset_name.text = selected_ruleset.name;
 	add_cell_button.disabled = false;
 	add_rule_button.disabled = false;
-	for material in selected_ruleset.materials:
+	for cell_material in selected_ruleset.materials:
 		var editor: CellEditor = cell_editor_scene.instantiate();
 		cells.add_child(editor);
 		editor.delete_requested.connect(_on_cell_delete_requested);
 		editor.cell_name_updated.connect(_on_cell_name_updated);
-		editor.initialize(selected_ruleset, material);
+		editor.initialize(selected_ruleset, cell_material);
 	for rule in selected_ruleset.rules:
 		add_rule_editor(rule);
 	disable_rule_move_buttons()
@@ -141,11 +142,11 @@ func _on_add_rule_button_pressed() -> void:
 
 func _on_add_cell_button_pressed() -> void:
 	var editor: CellEditor = cell_editor_scene.instantiate();
-	var material := CellMaterial.new();
-	selected_ruleset.cells.append(material);
+	var cell_material := CellMaterial.new();
+	selected_ruleset.cells.append(cell_material);
 	cells.add_child(editor);
 	editor.delete_requested.connect(_on_cell_delete_requested);
-	editor.initialize(selected_ruleset, material);
+	editor.initialize(selected_ruleset, cell_material);
 
 
 func _on_cell_delete_requested(to_delete: CellEditor) -> void:

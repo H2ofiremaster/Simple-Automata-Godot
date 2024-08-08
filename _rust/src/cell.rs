@@ -48,7 +48,7 @@ impl Cell {
     }
 
     pub fn default(grid: Gd<Grid>) -> Gd<Self> {
-        let default_material = grid.bind().get_ruleset().default_material();
+        let default_material = grid.bind().ruleset.bind().default_material();
         let default_state = default_material.bind().default_state();
         Self::create(grid, default_material, default_state)
     }
@@ -156,7 +156,7 @@ impl Cell {
                 true
             }
             MouseButton::RIGHT => {
-                self.set_material(grid.bind().get_ruleset().default_material());
+                self.set_material(grid.bind().ruleset.bind().default_material());
                 true
             }
             MouseButton::MIDDLE => {

@@ -16,8 +16,10 @@ pub struct Grid {
     pub cell_scene: Gd<PackedScene>,
 
     cells: Array<Gd<Cell>>,
+    #[var]
     pub selected_material: Option<Gd<CellMaterial>>,
-    ruleset: Gd<Ruleset>,
+    #[var]
+    pub ruleset: Gd<Ruleset>,
     cell_label: Option<Variant>,
 
     base: Base<GridContainer>,
@@ -27,39 +29,57 @@ pub struct Grid {
 impl Grid {
     const SPACING: i32 = 40;
 
-    #[func]
-    pub fn initialize(&mut self, ruleset: Gd<Ruleset>, game_board: Variant) {
-        self.selected_material = Some(ruleset.bind().default_material());
-        self.ruleset = ruleset;
-        self.cell_label = Some(game_board);
-        self.generate();
+    #[func(gd_self)]
+    pub fn initialize(mut this: Gd<Self>, ruleset: Gd<Ruleset>, game_board: Variant) {
+        godot_print!("Initialize called!");
+        {
+            godot_print!("Binding #1 Starting...");
+            let mut grid = this.bind_mut();
+            godot_print!("Binding #1 Successful...");
+            grid.selected_material = Some(ruleset.bind().default_material());
+            grid.ruleset = ruleset;
+            grid.cell_label = Some(game_board);
+        }
+        godot_print!("Binding #1 dropped.");
+        Self::generate(this);
     }
 
-    #[func]
-    fn generate(&mut self) {
-        let columns = self.base().get_columns();
-        self.cells
-            .resize(columns.pow(2) as usize, &Cell::default(self.to_gd()));
-        self.fill_default();
+    #[func(gd_self)]
+    fn generate(mut this: Gd<Self>) {
+        let default_cell = Cell::default(this.clone());
+        {
+            godot_print!("Binding #3 Starting...");
+            let mut grid = this.bind_mut();
+            godot_print!("Binding #3 successful...");
+            let columns = grid.base().get_columns();
+            grid.cells.resize(columns.pow(2) as usize, &default_cell);
 
-        self.base_mut()
-            .add_theme_constant_override("v_separation".into(), max(Self::SPACING / columns, 2));
-        self.base_mut()
-            .add_theme_constant_override("h_separation".into(), max(Self::SPACING / columns, 2));
+            grid.base_mut().add_theme_constant_override(
+                "v_separation".into(),
+                max(Self::SPACING / columns, 2),
+            );
+            grid.base_mut().add_theme_constant_override(
+                "h_separation".into(),
+                max(Self::SPACING / columns, 2),
+            );
+        }
+        godot_print!("Binding #3 dropped...");
+        Self::fill_default(this);
     }
 
-    pub fn get_ruleset(&self) -> GdRef<Ruleset> {
-        self.ruleset.bind()
-    }
-
-    #[func]
-    pub fn fill_default(&mut self) {
-        self.base_mut()
-            .get_children()
-            .iter_shared()
-            .for_each(|mut child| child.queue_free());
-        for i in 0..self.cells.len() {
-            self.cells.set(i, Cell::default(self.to_gd()))
+    #[func(gd_self)]
+    pub fn fill_default(mut this: Gd<Self>) {
+        {
+            this.bind_mut()
+                .base_mut()
+                .get_children()
+                .iter_shared()
+                .for_each(|mut child| child.queue_free());
+        }
+        let cell_count = this.bind().cells.len();
+        for i in 0..cell_count {
+            let default_cell = Cell::default(this.clone());
+            this.bind_mut().cells.set(i, default_cell);
         }
     }
 

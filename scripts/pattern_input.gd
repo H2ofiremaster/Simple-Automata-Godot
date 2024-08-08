@@ -67,8 +67,8 @@ func initialize(init_ruleset: Ruleset, init_pattern: Pattern) -> void:
 func update_cell_names() -> void:
 	while name_select.item_count > 2:
 		name_select.remove_item(2);
-	for material in ruleset.materials:
-		name_select.add_item(material.name);
+	for cell_material in ruleset.materials:
+		name_select.add_item(cell_material.name);
 
 # Signals
 
