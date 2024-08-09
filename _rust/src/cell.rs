@@ -76,8 +76,8 @@ impl Cell {
         };
 
         let possible_values_variant = self.material.bind().states.at(selected_key.clone());
-        let Ok(possible_values) = possible_values_variant.try_to::<Array<GString>>() else {
-            godot_error!("Material state dictionary did not have String Array as value. Aborting.");
+        let Ok(possible_values) = possible_values_variant.try_to::<VariantArray>() else {
+            godot_error!("Material state dictionary did not have Array as value. Aborting.");
             return;
         };
         let Ok(current_value) = self.state.at(selected_key.clone()).try_to::<GString>() else {
@@ -85,7 +85,8 @@ impl Cell {
             return;
         };
 
-        let Some(current_value_index) = possible_values.find(&current_value, None) else {
+        let Some(current_value_index) = possible_values.find(&current_value.to_variant(), None)
+        else {
             godot_error!(
                 "Could not find index of 'current_value'. \
                 This should not happen, as 'current_value' was obtained from this array."
@@ -118,8 +119,11 @@ impl Cell {
 
         if input.is_mouse_button_pressed(MouseButton::LEFT) {
             this.bind_mut().set_material(selected_material);
-            grid.bind().update_cell_label(Some(this), true);
+        } else if input.is_mouse_button_pressed(MouseButton::RIGHT) {
+            let default_material = grid.bind().ruleset.bind().default_material();
+            this.bind_mut().set_material(default_material);
         }
+        grid.bind().update_cell_label(Some(this), true);
     }
 
     #[func]
@@ -252,7 +256,6 @@ impl CellMaterial {
         self.states
             .iter_shared()
             .filter_map(|(key, value)| {
-                godot_print!("[default_state]: Uwrapping stirng array '{}'. Expected type: Array<GString>, Actual type: {:?}.", value, value.get_type());
                 let value: VariantArray = value.to();
                 value.get(0).map(|v| Some((key, v))).unwrap_or(None)
             })
