@@ -7,7 +7,7 @@ var selected_cell: Cell;
 var selected_index := 0;
 
 func update(cell: Cell) -> void:
-	print("update() Called for '%s'" % cell)
+	#print("update() Called for '%s'" % cell)
 	if !cell:
 		self.modulate = Color.TRANSPARENT;
 		return;
@@ -23,7 +23,7 @@ func update(cell: Cell) -> void:
 	update_states(cell);
 
 func update_states(cell: Cell) -> void:
-	print("update_states() Called for '%s'" % cell)
+	#print("update_states() Called for '%s'" % cell)
 	var real_children: Array[Label] = [];
 	for child in state_container.get_children():
 		if not child.is_queued_for_deletion():
