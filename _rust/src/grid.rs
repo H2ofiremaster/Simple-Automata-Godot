@@ -81,25 +81,9 @@ impl Grid {
         let cell_count = this.bind().cells.len();
         for i in 0..cell_count {
             let default_cell = Cell::default(this.clone());
-            godot_print!(
-                "Creating Cell: ({default_cell}, {})",
-                default_cell.instance_id()
-            );
             this.bind_mut().cells.set(i, default_cell.clone());
             this.bind_mut().base_mut().add_child(default_cell);
         }
-        godot_print!(
-            "Filling grid with default cell {}.",
-            Cell::default(this.clone())
-        );
-        godot_print!(
-            "Cells: {:?}",
-            this.bind()
-                .cells
-                .iter_shared()
-                .map(|c| c.instance_id().to_i64())
-                .collect::<Vec<_>>()
-        );
     }
 
     pub fn get_neighbors(&self, index: i32) -> Array<Option<Gd<Cell>>> {
@@ -117,7 +101,7 @@ impl Grid {
             (1, -1),  // Southwest
         ]
         .into_iter()
-        .map(|(x_offset, y_offset)| {
+        .map(|(y_offset, x_offset)| {
             let new_row = row + y_offset;
             let new_column = column + x_offset;
             let out_of_bounds = new_row < 0
@@ -127,7 +111,10 @@ impl Grid {
             if out_of_bounds {
                 None
             } else {
-                Some(self.cells.at((new_row * total_columns + column) as usize))
+                Some(
+                    self.cells
+                        .at((new_row * total_columns + new_column) as usize),
+                )
             }
         })
         .collect()
@@ -141,53 +128,40 @@ impl Grid {
 
         for index in 0..cell_count {
             let mut cell = this.bind().cells.at(index);
-            godot_print!("Transforming {}...", cell.instance_id().to_i64());
+            // godot_print!("Transforming {}...", cell);
             for rule in this.bind().ruleset.bind().get_rules().iter_shared() {
                 cell =
                     rule.bind()
                         .transform(cell, index, this.clone(), this.bind().ruleset.clone());
-                godot_print!("Transformed: {}", cell.instance_id().to_i64());
+                // godot_print!("Transformed: {}", cell);
             }
-            godot_print!("Final: {}", cell.instance_id().to_i64());
+            // godot_print!("Final: {}", cell);
             new_cells.set(index, cell);
         }
-        godot_print!(
-            "Old: {:?}",
-            this.bind()
-                .cells
-                .iter_shared()
-                .map(|c| c.instance_id().to_i64())
-                .collect::<Vec<_>>()
-        );
-        godot_print!(
-            "New: {:?}",
-            new_cells
-                .iter_shared()
-                .map(|c| c.instance_id().to_i64())
-                .collect::<Vec<_>>()
-        );
+        // godot_print!(
+        //     "Old: {:?}",
+        //     this.bind()
+        //         .cells
+        //         .iter_shared()
+        //         .map(|c| c.instance_id().to_i64())
+        //         .collect::<Vec<_>>()
+        // );
+        // godot_print!(
+        //     "New: {:?}",
+        //     new_cells
+        //         .iter_shared()
+        //         .map(|c| c.instance_id().to_i64())
+        //         .collect::<Vec<_>>()
+        // );
         this.bind_mut().cells = new_cells;
         this.bind_mut().refresh();
     }
 
     fn refresh(&mut self) {
         let current_children = self.base().get_children();
-        godot_print!(
-            "Cells: {:?}",
-            self.cells
-                .iter_shared()
-                .map(|c| (c.instance_id(), c))
-                .collect::<Vec<_>>()
-        );
         let cells_set: HashSet<InstanceId> =
             self.cells.iter_shared().map(|c| c.instance_id()).collect();
-        godot_print!("Id Set: {cells_set:?}");
         for mut child in current_children.iter_shared() {
-            godot_print!(
-                "Child ID: {}, In Set: {}",
-                child.instance_id(),
-                cells_set.contains(&child.instance_id())
-            );
             if !cells_set.contains(&child.instance_id()) {
                 let index = child.get_index();
                 child.queue_free();

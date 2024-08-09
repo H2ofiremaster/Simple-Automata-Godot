@@ -41,12 +41,23 @@ impl Pattern {
         self.inverted ^ is_match
     }
     fn matches_absolute(&self, cell: Gd<Cell>) -> bool {
-        if self.has_material() && cell.bind().get_material().get_name() != self.cell_material {
+        // godot_print!("Testing cell '{cell}' against '{}'.", self.to_string());
+        if self.has_material() && cell.bind().get_material().bind().name != self.cell_material {
+            // godot_print!(
+            //     "Material does not match specified material '{}'.",
+            //     self.cell_material,
+            // );
             return false;
         }
         if self.has_states() {
             for (key, value) in self.cell_state.iter_shared() {
-                if !cell.bind().state.get(key).is_some_and(|v| v == value) {
+                if !cell
+                    .bind()
+                    .state
+                    .get(key.clone())
+                    .is_some_and(|v| v == value)
+                {
+                    // godot_print!("Material does not match specified state '{key}: {value}'.",);
                     return false;
                 }
             }
@@ -65,10 +76,10 @@ impl Pattern {
     /// Validates a given state string.
     /// Returns an empty string if it's valid, and returns the first offending section if not.
     #[func]
-    fn validate_state(state_string: GString) -> GString {
-        let trimmed_state = state_string.to_string().replace(' ', "");
+    fn validate_state(state_string: String) -> String {
+        let trimmed_state = state_string.replace(' ', "");
         if state_string.is_empty() {
-            return GString::new();
+            return String::new();
         }
         if !trimmed_state.contains('=') {
             return state_string;
@@ -82,14 +93,14 @@ impl Pattern {
             }
         }
 
-        GString::new()
+        String::new()
     }
 
     /// Parses a given state string, discarding anything invalid with an error message.
     /// Use `validate_state` first to handle any errors properly.
     #[func]
-    fn parse_state(state_string: GString) -> Dictionary {
-        let trimmed_state = state_string.to_string().replace(" ", "");
+    fn parse_state(state_string: String) -> Dictionary {
+        let trimmed_state = state_string.replace(' ', "");
         if state_string.is_empty() {
             return Dictionary::new();
         }
@@ -98,10 +109,10 @@ impl Pattern {
             return Dictionary::new();
         }
 
-        let states = trimmed_state.split(",");
+        let states = trimmed_state.split(',');
         let mut state_dictionary: Dictionary = Dictionary::new();
         for state in states {
-            let parts: Vec<&str> = state.split("=").collect();
+            let parts: Vec<&str> = state.split('=').collect();
             if parts.len() != 2 {
                 godot_error!("State '{state}' is invalid.")
             } else {
@@ -109,7 +120,7 @@ impl Pattern {
             }
         }
 
-        return state_dictionary;
+        state_dictionary
     }
 }
 

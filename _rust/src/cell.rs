@@ -198,7 +198,7 @@ impl ITextureButton for Cell {
     }
 
     fn to_string(&self) -> GString {
-        format!("Cell({}, {})", self.material, self.state).into_godot()
+        format!("{}{}", self.material, self.state).into_godot()
     }
 }
 
@@ -208,7 +208,7 @@ impl ITextureButton for Cell {
 #[class(base=Resource)]
 pub struct CellMaterial {
     #[export]
-    name: GString,
+    pub name: GString,
     #[export]
     pub color: Color,
     #[export]
@@ -275,6 +275,6 @@ impl IResource for CellMaterial {
     }
 
     fn to_string(&self) -> GString {
-        format!("Material({},{})", self.name, self.color).into_godot()
+        self.name.clone()
     }
 }
