@@ -10,7 +10,9 @@ use crate::grid::Grid;
 #[class(base=TextureButton)]
 pub struct Cell {
     pub grid: Option<Gd<Grid>>,
-    material: Gd<CellMaterial>,
+    #[var(get, set = set_material)]
+    pub material: Gd<CellMaterial>,
+    #[var]
     pub state: Dictionary,
     #[var]
     pub selected_state_index: u32,
@@ -22,9 +24,6 @@ pub struct Cell {
 impl Cell {
     pub const SCENE_PATH: &'static str = "res://scenes/cell.tscn";
 
-    pub fn get_material(&self) -> Gd<CellMaterial> {
-        self.material.clone()
-    }
     pub fn set_material(&mut self, value: Gd<CellMaterial>) {
         self.base_mut().set_modulate(value.bind().color);
         self.material = value;
@@ -105,11 +104,12 @@ impl Cell {
             .set(selected_key, possible_values.at(target_index))
     }
 
-    #[func]
-    pub fn on_mouse_entered(&mut self) {
+    #[func(gd_self)]
+    fn on_mouse_entered(mut this: Gd<Self>) {
+        godot_print!("Mouse Entered.");
         let input = Input::singleton();
-        let Some(grid) = self.grid.clone() else {
-            godot_error!("[Cell::on_mouse_entered]: 'grid' is initialized.");
+        let Some(grid) = this.bind().grid.clone() else {
+            godot_error!("[Cell::on_mouse_entered]: 'grid' is not initialized.");
             return;
         };
         let Some(selected_material) = grid.bind().selected_material.clone() else {
@@ -118,20 +118,21 @@ impl Cell {
         };
 
         if input.is_mouse_button_pressed(MouseButton::LEFT) {
-            self.set_material(selected_material);
-            grid.bind().update_cell_label(Some(self.to_gd()), true);
+            this.bind_mut().set_material(selected_material);
+            grid.bind().update_cell_label(Some(this), true);
         }
     }
 
     #[func]
-    pub fn on_mouse_exited(&mut self) {
+    fn on_mouse_exited(&mut self) {
+        godot_print!("Mouse Exited.");
         if let Some(grid) = self.grid.clone() {
             grid.bind().update_cell_label(None, true);
         }
     }
 
-    #[func]
-    pub fn on_gui_input(&mut self, event: Gd<InputEvent>) {
+    #[func(gd_self)]
+    fn on_gui_input(mut this: Gd<Self>, event: Gd<InputEvent>) {
         let Ok(mouse_button_event) = event.try_cast::<InputEventMouseButton>() else {
             return;
         };
@@ -139,7 +140,7 @@ impl Cell {
             return;
         }
 
-        let Some(grid) = self.grid.clone() else {
+        let Some(grid) = this.bind().grid.clone() else {
             godot_error!("[Cell::on_gui_input]: 'grid' is not initialized.");
             return;
         };
@@ -152,33 +153,114 @@ impl Cell {
                     );
                     return;
                 };
-                self.set_material(selected_material);
+                this.bind_mut().set_material(selected_material);
                 true
             }
             MouseButton::RIGHT => {
-                self.set_material(grid.bind().ruleset.bind().default_material());
+                this.bind_mut()
+                    .set_material(grid.bind().ruleset.bind().default_material());
                 true
             }
             MouseButton::MIDDLE => {
-                self.selected_state_index += 1;
-                if (self.selected_state_index as usize) >= self.state.keys_array().len() {
-                    self.selected_state_index = 0;
+                let mut cell = this.bind_mut();
+                cell.selected_state_index += 1;
+                if (cell.selected_state_index as usize) >= cell.state.keys_array().len() {
+                    cell.selected_state_index = 0;
                 }
                 false
             }
             MouseButton::WHEEL_UP => {
-                self.cycle_state(1);
+                this.bind_mut().cycle_state(1);
                 false
             }
             MouseButton::WHEEL_DOWN => {
-                self.cycle_state(-1);
+                this.bind_mut().cycle_state(-1);
                 false
             }
             _ => return,
         };
-        grid.bind()
-            .update_cell_label(Some(self.to_gd()), material_changed);
+        grid.bind().update_cell_label(Some(this), material_changed);
     }
+
+    // #[func]
+    // fn on_mouse_entered(&mut self) {
+    //     godot_print!("Mouse Entered Successfully!");
+    //     let input = Input::singleton();
+    //     let Some(grid) = self.grid.clone() else {
+    //         godot_error!("[Cell::on_mouse_entered]: 'grid' is initialized.");
+    //         return;
+    //     };
+    //     let Some(selected_material) = grid.bind().selected_material.clone() else {
+    //         godot_error!("[Cell::on_mouse_entered]: 'grid' has no selected material.");
+    //         return;
+    //     };
+
+    //     if input.is_mouse_button_pressed(MouseButton::LEFT) {
+    //         self.set_material(selected_material);
+    //         grid.bind().update_cell_label(Some(self.to_gd()), true);
+    //     }
+    // }
+
+    // #[func]
+    // fn on_mouse_exited(&mut self) {
+
+    //     godot_print!("Mouse Exited Successfully!");
+    //     if let Some(grid) = self.grid.clone() {
+    //         grid.bind().update_cell_label(None, true);
+    //     }
+    // }
+
+    // #[func]
+    // fn on_gui_input(&mut self, event: Gd<InputEvent>) {
+
+    //     godot_print!("GUI Inputted Successfully!");
+    //     let Ok(mouse_button_event) = event.try_cast::<InputEventMouseButton>() else {
+    //         return;
+    //     };
+    //     if !mouse_button_event.is_pressed() {
+    //         return;
+    //     }
+
+    //     let Some(grid) = self.grid.clone() else {
+    //         godot_error!("[Cell::on_gui_input]: 'grid' is not initialized.");
+    //         return;
+    //     };
+
+    //     let material_changed: bool = match mouse_button_event.get_button_index() {
+    //         MouseButton::LEFT => {
+    //             let Some(selected_material) = grid.bind().selected_material.clone() else {
+    //                 godot_error!(
+    //                     "[Cell::on_gui_input]: 'grid' does not have a 'selected_material'."
+    //                 );
+    //                 return;
+    //             };
+    //             self.set_material(selected_material);
+    //             true
+    //         }
+    //         MouseButton::RIGHT => {
+    //             self.set_material(grid.bind().ruleset.bind().default_material());
+    //             true
+    //         }
+    //         MouseButton::MIDDLE => {
+    //             self.selected_state_index += 1;
+    //             if (self.selected_state_index as usize) >= self.state.keys_array().len() {
+    //                 self.selected_state_index = 0;
+    //             }
+    //             false
+    //         }
+    //         MouseButton::WHEEL_UP => {
+    //             self.cycle_state(1);
+    //             false
+    //         }
+    //         MouseButton::WHEEL_DOWN => {
+    //             self.cycle_state(-1);
+    //             false
+    //         }
+    //         _ => return,
+    //     };
+    //     grid.bind()
+    //         .update_cell_label(Some(self.to_gd()), material_changed);
+    // }
 }
 
 #[godot_api]

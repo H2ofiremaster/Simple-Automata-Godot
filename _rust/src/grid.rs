@@ -20,7 +20,7 @@ pub struct Grid {
     pub selected_material: Option<Gd<CellMaterial>>,
     #[var]
     pub ruleset: Gd<Ruleset>,
-    cell_label: Option<Variant>,
+    cell_label: Option<Gd<Object>>,
 
     base: Base<GridContainer>,
 }
@@ -30,17 +30,19 @@ impl Grid {
     const SPACING: i32 = 40;
 
     #[func(gd_self)]
-    pub fn initialize(mut this: Gd<Self>, ruleset: Gd<Ruleset>, game_board: Variant) {
-        godot_print!("Initialize called!");
+    pub fn initialize(mut this: Gd<Self>, ruleset: Gd<Ruleset>, game_board: Gd<Object>) {
+        // godot_print!("Initialize called!");
         {
-            godot_print!("Binding #1 Starting...");
+            // godot_print!("Binding #1 Starting...");
             let mut grid = this.bind_mut();
-            godot_print!("Binding #1 Successful...");
+
+            let cell_label_object = game_board.get("cell_label".into()).to::<Gd<Object>>();
+
             grid.selected_material = Some(ruleset.bind().default_material());
             grid.ruleset = ruleset;
-            grid.cell_label = Some(game_board);
+            grid.cell_label = Some(cell_label_object);
         }
-        godot_print!("Binding #1 dropped.");
+        // godot_print!("Binding #1 dropped.");
         Self::generate(this);
     }
 
@@ -48,9 +50,9 @@ impl Grid {
     fn generate(mut this: Gd<Self>) {
         let default_cell = Cell::default(this.clone());
         {
-            godot_print!("Binding #3 Starting...");
+            // godot_print!("Binding #3 Starting...");
             let mut grid = this.bind_mut();
-            godot_print!("Binding #3 successful...");
+            // godot_print!("Binding #3 successful...");
             let columns = grid.base().get_columns();
             grid.cells.resize(columns.pow(2) as usize, &default_cell);
 
@@ -63,7 +65,7 @@ impl Grid {
                 max(Self::SPACING / columns, 2),
             );
         }
-        godot_print!("Binding #3 dropped...");
+        // godot_print!("Binding #3 dropped...");
         Self::fill_default(this);
     }
 
@@ -153,15 +155,23 @@ impl Grid {
     }
 
     pub fn update_cell_label(&self, cell: Option<Gd<Cell>>, material_changed: bool) {
-        let Some(cell_label) = self.cell_label.clone() else {
+        let Some(mut cell_label) = self.cell_label.clone() else {
             godot_error!("[Grid::update_cell_label]: 'cell_label' is initialized.");
             return;
         };
         let cell_variant = cell.map(|c| c.to_variant()).unwrap_or(Variant::nil());
         if material_changed {
-            cell_label.call("update", &[cell_variant]);
+            let result = cell_label.try_call("update".into(), &[cell_variant]);
+            if let Err(error) = result {
+                godot_error!("[Grid::update_cell_label]: 'update' method call failed: {error}")
+            }
         } else {
-            cell_label.call("update_states", &[cell_variant]);
+            let result = cell_label.try_call("update_states".into(), &[cell_variant]);
+            if let Err(error) = result {
+                godot_error!(
+                    "[Grid::update_cell_label]: 'update_states' method call failed: {error}"
+                )
+            }
         }
     }
 }

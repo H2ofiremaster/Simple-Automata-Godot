@@ -1,8 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://b5v618ff5eut3"]
+[gd_scene load_steps=3 format=3 uid="uid://b5v618ff5eut3"]
 
 [ext_resource type="Texture2D" uid="uid://c68a6k16yw0ik" path="res://sprites/blank.png" id="1_lapy7"]
 
+[sub_resource type="CellMaterial" id="CellMaterial_hwcpe"]
+name = "Blank"
+color = Color(1, 1, 1, 1)
+
 [node name="Cell" type="Cell"]
+material = SubResource("CellMaterial_hwcpe")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -17,3 +22,7 @@ texture_disabled = ExtResource("1_lapy7")
 texture_focused = ExtResource("1_lapy7")
 ignore_texture_size = true
 stretch_mode = 0
+
+[connection signal="gui_input" from="." to="." method="on_gui_input"]
+[connection signal="mouse_entered" from="." to="." method="on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="on_mouse_exited"]
