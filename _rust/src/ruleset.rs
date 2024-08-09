@@ -99,21 +99,21 @@ impl Rule {
         &self,
         cell: Gd<Cell>,
         index: usize,
-        grid: &Grid,
+        grid: Gd<Grid>,
         ruleset: Gd<Ruleset>,
     ) -> Gd<Cell> {
         if !self.input.bind().matches(cell.clone()) {
             return cell;
         }
-        if self
-            .conditions
-            .iter_shared()
-            .any(|condition| !condition.bind().matches(grid.get_neighbors(index as i32)))
-        {
+        if self.conditions.iter_shared().any(|condition| {
+            !condition
+                .bind()
+                .matches(grid.bind().get_neighbors(index as i32))
+        }) {
             return cell;
         }
 
-        let mut new_cell: Gd<Cell> = cell.bind().full_clone(grid.to_gd());
+        let mut new_cell: Gd<Cell> = cell.bind().full_clone(grid);
         if self.output.bind().has_material() {
             let material = ruleset
                 .bind()

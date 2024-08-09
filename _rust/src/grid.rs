@@ -1,4 +1,4 @@
-use std::cmp::max;
+use std::{cmp::max, collections::HashSet};
 
 use godot::{
     classes::{GridContainer, IGridContainer},
@@ -81,13 +81,25 @@ impl Grid {
         let cell_count = this.bind().cells.len();
         for i in 0..cell_count {
             let default_cell = Cell::default(this.clone());
+            godot_print!(
+                "Creating Cell: ({default_cell}, {})",
+                default_cell.instance_id()
+            );
             this.bind_mut().cells.set(i, default_cell.clone());
             this.bind_mut().base_mut().add_child(default_cell);
         }
         godot_print!(
             "Filling grid with default cell {}.",
             Cell::default(this.clone())
-        )
+        );
+        godot_print!(
+            "Cells: {:?}",
+            this.bind()
+                .cells
+                .iter_shared()
+                .map(|c| c.instance_id().to_i64())
+                .collect::<Vec<_>>()
+        );
     }
 
     pub fn get_neighbors(&self, index: i32) -> Array<Option<Gd<Cell>>> {
@@ -121,29 +133,62 @@ impl Grid {
         .collect()
     }
 
-    #[func]
-    pub fn next_generation(&mut self) {
-        let cell_count = self.cells.len();
+    #[func(gd_self)]
+    pub fn next_generation(mut this: Gd<Self>) {
+        let cell_count = this.bind().cells.len();
         let mut new_cells: Array<Gd<Cell>> = Array::new();
-        new_cells.resize(cell_count, &Cell::default(self.to_gd()));
+        new_cells.resize(cell_count, &Cell::default(this.clone()));
 
         for index in 0..cell_count {
-            let mut cell = self.cells.at(index);
-            for rule in self.ruleset.bind().get_rules().iter_shared() {
-                cell = rule
-                    .bind()
-                    .transform(cell, index, self, self.ruleset.clone())
+            let mut cell = this.bind().cells.at(index);
+            godot_print!("Transforming {}...", cell.instance_id().to_i64());
+            for rule in this.bind().ruleset.bind().get_rules().iter_shared() {
+                cell =
+                    rule.bind()
+                        .transform(cell, index, this.clone(), this.bind().ruleset.clone());
+                godot_print!("Transformed: {}", cell.instance_id().to_i64());
             }
+            godot_print!("Final: {}", cell.instance_id().to_i64());
+            new_cells.set(index, cell);
         }
-        self.cells = new_cells;
-        self.refresh()
+        godot_print!(
+            "Old: {:?}",
+            this.bind()
+                .cells
+                .iter_shared()
+                .map(|c| c.instance_id().to_i64())
+                .collect::<Vec<_>>()
+        );
+        godot_print!(
+            "New: {:?}",
+            new_cells
+                .iter_shared()
+                .map(|c| c.instance_id().to_i64())
+                .collect::<Vec<_>>()
+        );
+        this.bind_mut().cells = new_cells;
+        this.bind_mut().refresh();
     }
 
     fn refresh(&mut self) {
         let current_children = self.base().get_children();
-        let cells_set: Dictionary = self.cells.iter_shared().map(|c| (c, true)).collect();
+        godot_print!(
+            "Cells: {:?}",
+            self.cells
+                .iter_shared()
+                .map(|c| (c.instance_id(), c))
+                .collect::<Vec<_>>()
+        );
+        let cells_set: HashSet<InstanceId> =
+            self.cells.iter_shared().map(|c| c.instance_id()).collect();
+        godot_print!("Id Set: {cells_set:?}");
         for mut child in current_children.iter_shared() {
-            if !cells_set.contains_key(child.clone()) {
+            godot_print!(
+                "Child ID: {}, In Set: {}",
+                child.instance_id(),
+                cells_set.contains(&child.instance_id())
+            );
+            if !cells_set.contains(&child.instance_id()) {
                 let index = child.get_index();
                 child.queue_free();
                 self.base_mut().remove_child(child);
