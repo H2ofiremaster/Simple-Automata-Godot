@@ -1,4 +1,4 @@
-use std::{cmp::max, collections::HashSet};
+use std::cmp::max;
 
 use godot::{
     classes::{GridContainer, IGridContainer},
@@ -155,22 +155,6 @@ impl Grid {
         }
         // 156.50 ms
         // 111.40 ms
-    }
-
-    fn refresh(&mut self) {
-        let current_children = self.base().get_children();
-        let cells_set: HashSet<InstanceId> =
-            self.cells.iter_shared().map(|c| c.instance_id()).collect();
-        for mut child in current_children.iter_shared() {
-            if !cells_set.contains(&child.instance_id()) {
-                let index = child.get_index();
-                child.queue_free();
-                self.base_mut().remove_child(child);
-                let new_cell = self.cells.at(index as usize);
-                self.base_mut().add_child(new_cell.clone());
-                self.base_mut().move_child(new_cell, index);
-            }
-        }
     }
 
     pub fn update_cell_label(&self, cell: Option<Gd<Cell>>, material_changed: bool) {

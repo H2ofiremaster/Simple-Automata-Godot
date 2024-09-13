@@ -38,14 +38,6 @@ impl Cell {
         cell
     }
 
-    pub fn full_clone(&self, grid: Gd<Grid>) -> Gd<Self> {
-        Self::create(
-            grid,
-            self.material.bind().full_clone(),
-            self.state.duplicate_deep(),
-        )
-    }
-
     pub fn default(grid: Gd<Grid>) -> Gd<Self> {
         let default_material = grid.bind().ruleset.bind().default_material();
         let default_state = default_material.bind().default_state();
@@ -228,7 +220,7 @@ impl CellMaterial {
         })
     }
 
-    fn create(name: GString, color: Color, states: Dictionary) -> Gd<Self> {
+    fn _create(name: GString, color: Color, states: Dictionary) -> Gd<Self> {
         // if !states.is_empty() {
         //     for key in states.keys_array().iter_shared() {
         //         if !(key.get_type() == VariantType::STRING
@@ -246,10 +238,6 @@ impl CellMaterial {
             states,
             base,
         })
-    }
-
-    pub fn full_clone(&self) -> Gd<Self> {
-        Self::create(self.name.clone(), self.color, self.states.duplicate_deep())
     }
 
     pub fn default_state(&self) -> Dictionary {
