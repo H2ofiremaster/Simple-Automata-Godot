@@ -41,12 +41,7 @@ impl Pattern {
         self.inverted ^ is_match
     }
     fn matches_absolute(&self, cell: Gd<Cell>) -> bool {
-        // godot_print!("Testing cell '{cell}' against '{}'.", self.to_string());
         if self.has_material() && cell.bind().get_material().bind().name != self.cell_material {
-            // godot_print!(
-            //     "Material does not match specified material '{}'.",
-            //     self.cell_material,
-            // );
             return false;
         }
         if self.has_states() {
@@ -57,7 +52,6 @@ impl Pattern {
                     .get(key.clone())
                     .is_some_and(|v| v == value)
                 {
-                    // godot_print!("Material does not match specified state '{key}: {value}'.",);
                     return false;
                 }
             }

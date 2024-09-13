@@ -31,9 +31,7 @@ impl Grid {
 
     #[func(gd_self)]
     pub fn initialize(mut this: Gd<Self>, ruleset: Gd<Ruleset>, game_board: Gd<Object>) {
-        // godot_print!("Initialize called!");
         {
-            // godot_print!("Binding #1 Starting...");
             let mut grid = this.bind_mut();
 
             let cell_label_object = game_board.get("cell_label".into()).to::<Gd<Object>>();
@@ -42,7 +40,6 @@ impl Grid {
             grid.ruleset = ruleset;
             grid.cell_label = Some(cell_label_object);
         }
-        // godot_print!("Binding #1 dropped.");
         Self::generate(this);
     }
 
@@ -50,9 +47,7 @@ impl Grid {
     fn generate(mut this: Gd<Self>) {
         let default_cell = Cell::default(this.clone());
         {
-            // godot_print!("Binding #3 Starting...");
             let mut grid = this.bind_mut();
-            // godot_print!("Binding #3 successful...");
             let columns = grid.base().get_columns();
             grid.cells.resize(columns.pow(2) as usize, &default_cell);
 
@@ -65,7 +60,6 @@ impl Grid {
                 max(Self::SPACING / columns, 2),
             );
         }
-        // godot_print!("Binding #3 dropped...");
         Self::fill_default(this);
     }
 
@@ -153,8 +147,6 @@ impl Grid {
                 cell_binding.state = state;
             }
         }
-        // 156.50 ms
-        // 111.40 ms
     }
 
     pub fn update_cell_label(&self, cell: Option<Gd<Cell>>, material_changed: bool) {

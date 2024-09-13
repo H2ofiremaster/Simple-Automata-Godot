@@ -221,17 +221,6 @@ impl CellMaterial {
     }
 
     fn _create(name: GString, color: Color, states: Dictionary) -> Gd<Self> {
-        // if !states.is_empty() {
-        //     for key in states.keys_array().iter_shared() {
-        //         if !(key.get_type() == VariantType::STRING
-        //             && states
-        //                 .get(key)
-        //                 .is_some_and(|v| v.get_type() == VariantType::ARRAY))
-        //         {
-        //             return None;
-        //         }
-        //     }
-        // }
         Gd::from_init_fn(|base| CellMaterial {
             name,
             color,

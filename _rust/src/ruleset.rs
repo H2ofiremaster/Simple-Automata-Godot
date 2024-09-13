@@ -103,23 +103,14 @@ impl Rule {
         ruleset: Gd<Ruleset>,
     ) -> Option<(Option<Gd<CellMaterial>>, Option<Dictionary>)> {
         if !self.input.bind().matches(cell.clone()) {
-            // godot_print!(
-            //     "'{cell}' does not match input material '{}'. Aborting.",
-            //     self.input
-            // );
             return None;
         }
         if self.conditions.iter_shared().any(|condition| {
             let matches = condition
                 .bind()
                 .matches(grid.bind().get_neighbors(index as i32));
-            // godot_print!("Condition '{}' matches: {matches}", condition);
             !matches
         }) {
-            // godot_print!(
-            //     "'{cell}' does not match one or more of '{}'. Aborting.",
-            //     self.conditions
-            // );
             return None;
         }
 
@@ -130,7 +121,6 @@ impl Rule {
                 .get_material(self.output.bind().get_cell_material());
 
             new_cell_data.0 = material;
-            // godot_print!("Transforming material of {cell} to {new_cell}.");
         }
         if self.output.bind().has_states() {
             let mut new_cell_state: Dictionary = Dictionary::new();
@@ -140,7 +130,6 @@ impl Rule {
                 .iter_shared()
                 .for_each(|(key, value)| new_cell_state.set(key, value));
             new_cell_data.1 = Some(new_cell_state);
-            // godot_print!("Transforming states of {cell} to {new_cell_state}.");
         }
         Some(new_cell_data)
     }
@@ -223,15 +212,6 @@ impl Condition {
     }
 
     fn matches(&self, neighbors: Array<Option<Gd<Cell>>>) -> bool {
-        // godot_print!(
-        //     "Testing condition: {}, type: {:?}, neighbors: {:?}",
-        //     self.to_string(),
-        //     self.condition_type,
-        //     neighbors
-        //         .iter_shared()
-        //         .map(|o| o.map(|c| c.to_string()))
-        //         .collect::<Vec<_>>(),
-        // );
         match self.condition_type {
             ConditionType::Numeric => {
                 let count: u8 = neighbors
@@ -241,25 +221,13 @@ impl Condition {
                     .sum();
                 self.counts.contains(&count)
             }
-            ConditionType::Directional => {
-                // godot_print!(
-                //     "Testing directional condition with directions: {}",
-                //     self.directions
-                // );
-                //
-                self.directions.iter_shared().any(|dir| {
-                    let neighbor = neighbors.at(usize::from(dir) - 1);
-                    let matches = neighbor
-                        .clone()
-                        .is_some_and(|n| self.pattern.bind().matches(n));
-                    // godot_print!(
-                    //     "Testing direction {dir}: Neighbor: {:?}, Matches '{}': {matches}",
-                    //     neighbor.map(|c| c.to_string()),
-                    //     self.pattern,
-                    // );
-                    matches
-                })
-            }
+            ConditionType::Directional => self.directions.iter_shared().any(|dir| {
+                let neighbor = neighbors.at(usize::from(dir) - 1);
+                let matches = neighbor
+                    .clone()
+                    .is_some_and(|n| self.pattern.bind().matches(n));
+                matches
+            }),
         }
     }
 }
