@@ -153,8 +153,17 @@ impl Grid {
         //         .map(|c| c.instance_id().to_i64())
         //         .collect::<Vec<_>>()
         // );
-        this.bind_mut().cells = new_cells;
-        this.bind_mut().refresh();
+
+        for i in 0..cell_count {
+            let new_material = new_cells.at(i).bind().material.clone();
+            let new_state = new_cells.at(i).bind().state.clone();
+            let mut cell = this.bind_mut().cells.at(i);
+            let mut cell_binding = cell.bind_mut();
+            cell_binding.set_material(new_material);
+            cell_binding.state = new_state;
+        }
+        // 156.50 ms
+        // 111.40 ms
     }
 
     fn refresh(&mut self) {
