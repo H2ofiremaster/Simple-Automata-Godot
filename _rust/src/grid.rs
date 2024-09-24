@@ -1,4 +1,4 @@
-use std::{cmp::max, collections::HashSet};
+use std::cmp::max;
 
 use godot::{
     classes::{GridContainer, IGridContainer},
@@ -31,9 +31,7 @@ impl Grid {
 
     #[func(gd_self)]
     pub fn initialize(mut this: Gd<Self>, ruleset: Gd<Ruleset>, game_board: Gd<Object>) {
-        // godot_print!("Initialize called!");
         {
-            // godot_print!("Binding #1 Starting...");
             let mut grid = this.bind_mut();
 
             let cell_label_object = game_board.get("cell_label".into()).to::<Gd<Object>>();
@@ -42,7 +40,6 @@ impl Grid {
             grid.ruleset = ruleset;
             grid.cell_label = Some(cell_label_object);
         }
-        // godot_print!("Binding #1 dropped.");
         Self::generate(this);
     }
 
@@ -50,9 +47,7 @@ impl Grid {
     fn generate(mut this: Gd<Self>) {
         let default_cell = Cell::default(this.clone());
         {
-            // godot_print!("Binding #3 Starting...");
             let mut grid = this.bind_mut();
-            // godot_print!("Binding #3 successful...");
             let columns = grid.base().get_columns();
             grid.cells.resize(columns.pow(2) as usize, &default_cell);
 
@@ -65,7 +60,6 @@ impl Grid {
                 max(Self::SPACING / columns, 2),
             );
         }
-        // godot_print!("Binding #3 dropped...");
         Self::fill_default(this);
     }
 
@@ -123,52 +117,34 @@ impl Grid {
     #[func(gd_self)]
     pub fn next_generation(mut this: Gd<Self>) {
         let cell_count = this.bind().cells.len();
-        let mut new_cells: Array<Gd<Cell>> = Array::new();
-        new_cells.resize(cell_count, &Cell::default(this.clone()));
+        let mut new_cell_data: Vec<(Option<Gd<CellMaterial>>, Option<Dictionary>)> = Vec::new();
 
         for index in 0..cell_count {
-            let mut cell = this.bind().cells.at(index);
-            // godot_print!("Transforming {}...", cell);
+            let cell = this.bind().cells.at(index);
+            let mut data = (None, None);
             for rule in this.bind().ruleset.bind().get_rules().iter_shared() {
-                cell =
-                    rule.bind()
-                        .transform(cell, index, this.clone(), this.bind().ruleset.clone());
-                // godot_print!("Transformed: {}", cell);
+                if let Some(new_data) = rule.bind().transform(
+                    cell.clone(),
+                    index,
+                    this.clone(),
+                    this.bind().ruleset.clone(),
+                ) {
+                    data = new_data
+                };
             }
-            // godot_print!("Final: {}", cell);
-            new_cells.set(index, cell);
+            new_cell_data.push(data);
         }
-        // godot_print!(
-        //     "Old: {:?}",
-        //     this.bind()
-        //         .cells
-        //         .iter_shared()
-        //         .map(|c| c.instance_id().to_i64())
-        //         .collect::<Vec<_>>()
-        // );
-        // godot_print!(
-        //     "New: {:?}",
-        //     new_cells
-        //         .iter_shared()
-        //         .map(|c| c.instance_id().to_i64())
-        //         .collect::<Vec<_>>()
-        // );
-        this.bind_mut().cells = new_cells;
-        this.bind_mut().refresh();
-    }
 
-    fn refresh(&mut self) {
-        let current_children = self.base().get_children();
-        let cells_set: HashSet<InstanceId> =
-            self.cells.iter_shared().map(|c| c.instance_id()).collect();
-        for mut child in current_children.iter_shared() {
-            if !cells_set.contains(&child.instance_id()) {
-                let index = child.get_index();
-                child.queue_free();
-                self.base_mut().remove_child(child);
-                let new_cell = self.cells.at(index as usize);
-                self.base_mut().add_child(new_cell.clone());
-                self.base_mut().move_child(new_cell, index);
+        for (index, data) in new_cell_data.into_iter().enumerate() {
+            let new_material = data.0;
+            let new_state = data.1;
+            let mut cell = this.bind_mut().cells.at(index);
+            let mut cell_binding = cell.bind_mut();
+            if let Some(material) = new_material {
+                cell_binding.set_material(material);
+            }
+            if let Some(state) = new_state {
+                cell_binding.state = state;
             }
         }
     }

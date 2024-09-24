@@ -101,48 +101,37 @@ impl Rule {
         index: usize,
         grid: Gd<Grid>,
         ruleset: Gd<Ruleset>,
-    ) -> Gd<Cell> {
+    ) -> Option<(Option<Gd<CellMaterial>>, Option<Dictionary>)> {
         if !self.input.bind().matches(cell.clone()) {
-            // godot_print!(
-            //     "'{cell}' does not match input material '{}'. Aborting.",
-            //     self.input
-            // );
-            return cell;
+            return None;
         }
         if self.conditions.iter_shared().any(|condition| {
             let matches = condition
                 .bind()
                 .matches(grid.bind().get_neighbors(index as i32));
-            // godot_print!("Condition '{}' matches: {matches}", condition);
             !matches
         }) {
-            // godot_print!(
-            //     "'{cell}' does not match one or more of '{}'. Aborting.",
-            //     self.conditions
-            // );
-            return cell;
+            return None;
         }
 
-        let mut new_cell: Gd<Cell> = cell.bind().full_clone(grid);
+        let mut new_cell_data = (None, None);
         if self.output.bind().has_material() {
             let material = ruleset
                 .bind()
                 .get_material(self.output.bind().get_cell_material());
-            if let Some(material) = material {
-                new_cell.bind_mut().set_material(material);
-            }
-            // godot_print!("Transforming material of {cell} to {new_cell}.");
+
+            new_cell_data.0 = material;
         }
         if self.output.bind().has_states() {
-            let new_cell_state = &mut new_cell.bind_mut().state;
+            let mut new_cell_state: Dictionary = Dictionary::new();
             self.output
                 .bind()
                 .get_cell_state()
                 .iter_shared()
                 .for_each(|(key, value)| new_cell_state.set(key, value));
-            // godot_print!("Transforming states of {cell} to {new_cell_state}.");
+            new_cell_data.1 = Some(new_cell_state);
         }
-        new_cell
+        Some(new_cell_data)
     }
 }
 
@@ -223,15 +212,6 @@ impl Condition {
     }
 
     fn matches(&self, neighbors: Array<Option<Gd<Cell>>>) -> bool {
-        // godot_print!(
-        //     "Testing condition: {}, type: {:?}, neighbors: {:?}",
-        //     self.to_string(),
-        //     self.condition_type,
-        //     neighbors
-        //         .iter_shared()
-        //         .map(|o| o.map(|c| c.to_string()))
-        //         .collect::<Vec<_>>(),
-        // );
         match self.condition_type {
             ConditionType::Numeric => {
                 let count: u8 = neighbors
@@ -241,25 +221,13 @@ impl Condition {
                     .sum();
                 self.counts.contains(&count)
             }
-            ConditionType::Directional => {
-                // godot_print!(
-                //     "Testing directional condition with directions: {}",
-                //     self.directions
-                // );
-                //
-                self.directions.iter_shared().any(|dir| {
-                    let neighbor = neighbors.at(usize::from(dir) - 1);
-                    let matches = neighbor
-                        .clone()
-                        .is_some_and(|n| self.pattern.bind().matches(n));
-                    // godot_print!(
-                    //     "Testing direction {dir}: Neighbor: {:?}, Matches '{}': {matches}",
-                    //     neighbor.map(|c| c.to_string()),
-                    //     self.pattern,
-                    // );
-                    matches
-                })
-            }
+            ConditionType::Directional => self.directions.iter_shared().any(|dir| {
+                let neighbor = neighbors.at(usize::from(dir) - 1);
+                let matches = neighbor
+                    .clone()
+                    .is_some_and(|n| self.pattern.bind().matches(n));
+                matches
+            }),
         }
     }
 }
