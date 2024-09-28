@@ -20,7 +20,7 @@ func _on_ruleset_creator_ruleset_changed(new_ruleset: Ruleset) -> void:
 	ruleset = new_ruleset;
 	for cell in cell_selector.get_children():
 		cell.queue_free();
-	for cell_material in ruleset.materials:
+	for cell_material in ruleset.material_array():
 		var cell_display: CellDisplay = CellDisplay.create(cell_material, _on_material_selected);
 		cell_selector.add_child(cell_display);
 	
@@ -33,4 +33,3 @@ func _on_ruleset_creator_ruleset_changed(new_ruleset: Ruleset) -> void:
 func _on_material_selected(cell_material: CellMaterial) -> void:
 	grid.selected_material = cell_material;
 	# print("Selected CellType: " + str(cell_type));
-

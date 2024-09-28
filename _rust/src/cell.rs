@@ -1,8 +1,11 @@
+use std::collections::HashMap;
+
 use godot::{
     classes::{ITextureButton, InputEvent, InputEventMouseButton, TextureButton},
     global::MouseButton,
     prelude::*,
 };
+use serde::{Deserialize, Serialize};
 
 use crate::grid::Grid;
 
@@ -11,7 +14,7 @@ use crate::grid::Grid;
 pub struct Cell {
     pub grid: Option<Gd<Grid>>,
     #[var(get, set = set_material)]
-    pub material: Gd<CellMaterial>,
+    pub material: Gd<GdCellMaterial>,
     #[var]
     pub state: Dictionary,
     #[var]
@@ -24,13 +27,13 @@ pub struct Cell {
 impl Cell {
     pub const SCENE_PATH: &'static str = "res://scenes/cell.tscn";
 
-    pub fn set_material(&mut self, value: Gd<CellMaterial>) {
-        self.base_mut().set_modulate(value.bind().color);
+    pub fn set_material(&mut self, value: Gd<GdCellMaterial>) {
+        self.base_mut().set_modulate(value.bind().color());
         self.material = value;
         self.update_state();
     }
 
-    pub fn create(grid: Gd<Grid>, material: Gd<CellMaterial>, state: Dictionary) -> Gd<Self> {
+    pub fn create(grid: Gd<Grid>, material: Gd<GdCellMaterial>, state: Dictionary) -> Gd<Self> {
         let mut cell: Gd<Cell> = grid.bind().cell_scene.instantiate_as::<Cell>();
         cell.bind_mut().grid = Some(grid);
         cell.bind_mut().set_material(material);
@@ -66,10 +69,12 @@ impl Cell {
         else {
             return;
         };
-
-        let possible_values_variant = self.material.bind().states.at(selected_key.clone());
-        let Ok(possible_values) = possible_values_variant.try_to::<VariantArray>() else {
-            godot_error!("Material state dictionary did not have Array as value. Aborting.");
+        let material = self.material.bind();
+        let possible_values_option = material
+            .states()
+            .get(&selected_key.to::<GString>().to_string());
+        let Some(possible_values) = possible_values_option else {
+            godot_error!("Material state map returned None. Aborting.");
             return;
         };
         let Ok(current_value) = self.state.at(selected_key.clone()).try_to::<GString>() else {
@@ -77,7 +82,9 @@ impl Cell {
             return;
         };
 
-        let Some(current_value_index) = possible_values.find(&current_value.to_variant(), None)
+        let Some(current_value_index) = possible_values
+            .iter()
+            .position(|v| v == &current_value.to_string())
         else {
             godot_error!(
                 "Could not find index of 'current_value'. \
@@ -94,7 +101,7 @@ impl Cell {
             target_index = 0;
         }
         self.state
-            .set(selected_key, possible_values.at(target_index))
+            .set(selected_key, possible_values[target_index].clone())
     }
 
     #[func(gd_self)]
@@ -182,7 +189,7 @@ impl ITextureButton for Cell {
     fn init(base: Base<Self::Base>) -> Self {
         Self {
             grid: None,
-            material: CellMaterial::blank(),
+            material: GdCellMaterial::blank(),
             state: Dictionary::new(),
             selected_state_index: 0,
             base,
@@ -197,61 +204,91 @@ impl ITextureButton for Cell {
 /// Represents a material that a cell can be. Contains a name, color, and dictionary mapping state names to all possible values.
 /// Parameter `states` must be a [Dictionary] mapping [GString] to an [Array] of [GString]s.
 #[derive(GodotClass)]
-#[class(base=Resource)]
-pub struct CellMaterial {
-    #[export]
-    pub name: GString,
-    #[export]
-    pub color: Color,
-    #[export]
-    states: Dictionary,
+#[class(base=Resource, rename=CellMaterial)]
+pub struct GdCellMaterial {
+    inner: CellMaterial,
 
     base: Base<Resource>,
 }
 
 #[godot_api]
-impl CellMaterial {
-    pub fn blank() -> Gd<Self> {
-        Gd::from_init_fn(|base| Self {
-            name: "Blank".into_godot(),
-            color: Color::WHITE,
-            states: Dictionary::new(),
-            base,
-        })
+impl GdCellMaterial {
+    pub fn wrap(inner: CellMaterial) -> Gd<Self> {
+        Gd::from_init_fn(|base| Self { inner, base })
     }
 
-    fn _create(name: GString, color: Color, states: Dictionary) -> Gd<Self> {
-        Gd::from_init_fn(|base| CellMaterial {
-            name,
-            color,
-            states,
-            base,
-        })
+    pub fn inner(&self) -> &CellMaterial {
+        &self.inner
+    }
+
+    pub fn blank() -> Gd<Self> {
+        Self::wrap(CellMaterial::blank())
     }
 
     pub fn default_state(&self) -> Dictionary {
-        self.states
-            .iter_shared()
-            .filter_map(|(key, value)| {
-                let value: VariantArray = value.to();
-                value.get(0).map(|v| Some((key, v))).unwrap_or(None)
-            })
-            .collect()
+        self.inner.default_state()
+    }
+
+    pub fn name(&self) -> &str {
+        &self.inner.name
+    }
+
+    pub fn states(&self) -> &HashMap<String, Vec<String>> {
+        &self.inner.states
+    }
+
+    pub fn color(&self) -> Color {
+        self.inner.color
     }
 }
 
 #[godot_api]
-impl IResource for CellMaterial {
+impl IResource for GdCellMaterial {
     fn init(base: Base<Self::Base>) -> Self {
         Self {
-            name: GString::new(),
-            color: Color::BLACK,
-            states: Dictionary::new(),
+            inner: CellMaterial::default(),
             base,
         }
     }
 
     fn to_string(&self) -> GString {
-        self.name.clone()
+        self.inner.name.clone().into_godot()
+    }
+}
+
+#[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq)]
+pub struct CellMaterial {
+    pub name: String,
+    pub color: Color,
+    states: HashMap<String, Vec<String>>,
+}
+
+impl CellMaterial {
+    pub fn blank() -> Self {
+        Self {
+            name: String::from("Blank"),
+            color: Color::WHITE,
+            states: HashMap::new(),
+        }
+    }
+
+    fn new(name: String, color: Color, states: HashMap<String, Vec<String>>) -> Self {
+        Self {
+            name,
+            color,
+            states,
+        }
+    }
+
+    pub fn default_state(&self) -> Dictionary {
+        self.states
+            .iter()
+            .filter_map(|(key, value)| {
+                value
+                    .first()
+                    .map(|v| Some((key.to_owned(), v.to_owned())))
+                    .unwrap_or(None)
+            })
+            .collect()
     }
 }

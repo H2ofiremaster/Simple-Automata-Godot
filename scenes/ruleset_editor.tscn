@@ -53,11 +53,9 @@ text = "  ↩  "
 [node name="RulesetSelector" type="OptionButton" parent="Background/VBoxContainer/Toolbar"]
 layout_mode = 2
 size_flags_horizontal = 3
-item_count = 2
 selected = 0
+item_count = 2
 popup/item_0/text = "Select Ruleset..."
-popup/item_0/id = 0
-popup/item_1/text = ""
 popup/item_1/id = 1
 popup/item_1/separator = true
 

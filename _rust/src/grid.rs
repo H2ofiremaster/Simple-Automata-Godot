@@ -1,4 +1,4 @@
-use std::cmp::max;
+use std::{cmp::max, collections::HashMap};
 
 use godot::{
     classes::{GridContainer, IGridContainer},
@@ -6,8 +6,8 @@ use godot::{
 };
 
 use crate::{
-    cell::{Cell, CellMaterial},
-    ruleset::Ruleset,
+    cell::{Cell, CellMaterial, GdCellMaterial},
+    ruleset::{CellData, GdRuleset, Ruleset},
 };
 
 #[derive(GodotClass)]
@@ -17,9 +17,9 @@ pub struct Grid {
 
     cells: Array<Gd<Cell>>,
     #[var]
-    pub selected_material: Option<Gd<CellMaterial>>,
+    pub selected_material: Option<Gd<GdCellMaterial>>,
     #[var]
-    pub ruleset: Gd<Ruleset>,
+    pub ruleset: Gd<GdRuleset>,
     cell_label: Option<Gd<Object>>,
 
     base: Base<GridContainer>,
@@ -30,7 +30,7 @@ impl Grid {
     const SPACING: i32 = 40;
 
     #[func(gd_self)]
-    pub fn initialize(mut this: Gd<Self>, ruleset: Gd<Ruleset>, game_board: Gd<Object>) {
+    pub fn initialize(mut this: Gd<Self>, ruleset: Gd<GdRuleset>, game_board: Gd<Object>) {
         {
             let mut grid = this.bind_mut();
 
@@ -117,34 +117,39 @@ impl Grid {
     #[func(gd_self)]
     pub fn next_generation(mut this: Gd<Self>) {
         let cell_count = this.bind().cells.len();
-        let mut new_cell_data: Vec<(Option<Gd<CellMaterial>>, Option<Dictionary>)> = Vec::new();
+        let new_cell_data_owned: Vec<(Option<CellMaterial>, Option<HashMap<String, String>>)>;
+        {
+            let mut new_cell_data: Vec<CellData> = Vec::new();
 
-        for index in 0..cell_count {
-            let cell = this.bind().cells.at(index);
-            let mut data = (None, None);
-            for rule in this.bind().ruleset.bind().get_rules().iter_shared() {
-                if let Some(new_data) = rule.bind().transform(
-                    cell.clone(),
-                    index,
-                    this.clone(),
-                    this.bind().ruleset.clone(),
-                ) {
-                    data = new_data
-                };
+            let grid_b = this.bind();
+            let ruleset = grid_b.ruleset.bind();
+
+            for index in 0..cell_count {
+                let cell = grid_b.cells.at(index);
+                let mut data = CellData::default();
+                for rule in ruleset.rules().iter() {
+                    if let Some(new_data) =
+                        rule.transform(cell.clone(), index, this.clone(), ruleset.inner())
+                    {
+                        data = new_data
+                    };
+                }
+                new_cell_data.push(data);
             }
-            new_cell_data.push(data);
+            new_cell_data_owned = new_cell_data.into_iter().map(|x| x.into_owned()).collect();
         }
 
-        for (index, data) in new_cell_data.into_iter().enumerate() {
+        let grid_b = this.bind_mut();
+        for (index, data) in new_cell_data_owned.into_iter().enumerate() {
             let new_material = data.0;
             let new_state = data.1;
-            let mut cell = this.bind_mut().cells.at(index);
+            let mut cell = grid_b.cells.at(index);
             let mut cell_binding = cell.bind_mut();
             if let Some(material) = new_material {
-                cell_binding.set_material(material);
+                cell_binding.set_material(GdCellMaterial::wrap(material));
             }
             if let Some(state) = new_state {
-                cell_binding.state = state;
+                cell_binding.state = state.into_iter().collect();
             }
         }
     }
@@ -178,7 +183,7 @@ impl IGridContainer for Grid {
             cell_scene: PackedScene::new_gd(),
             cells: Array::new(),
             selected_material: None,
-            ruleset: Ruleset::blank(),
+            ruleset: GdRuleset::wrap(Ruleset::blank()),
             cell_label: None,
             base,
         }

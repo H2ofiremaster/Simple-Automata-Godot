@@ -65,23 +65,21 @@ func add_rule_editor(rule: Rule, index: int = -1) -> void:
 	disable_rule_move_buttons();
 
 func move_rule_editor(editor: RuleEditor, up: bool) -> void:
-	var original_index := selected_ruleset.rules.find(editor.rule);
+	var original_index := selected_ruleset.rule_index(editor.rule);
 	var new_index := original_index - 1 if up else original_index + 1;
 	
 	# print("%s | %s" % [original_index, new_index])
 	
-	if new_index < 0 or new_index >= selected_ruleset.rules.size():
+	if new_index < 0 or new_index >= selected_ruleset.rule_count():
 		return;
 	
-	var item_b := selected_ruleset.rules[new_index];
-	selected_ruleset.rules[new_index] = selected_ruleset.rules[original_index];
-	selected_ruleset.rules[original_index] = item_b;
+	selected_ruleset.swap_rules(original_index, new_index);
 	
 	rules.move_child(editor, new_index);
 	disable_rule_move_buttons();
 
 func delete_rule_editor(to_delete: RuleEditor) -> void:
-	var index := selected_ruleset.rules.find(to_delete.rule);
+	var index := selected_ruleset.rule_index(to_delete.rule);
 	if index != -1:
 		selected_ruleset.rules.remove_at(index);
 	to_delete.queue_free();
@@ -123,13 +121,13 @@ func _on_ruleset_selector_item_selected(index: int) -> void:
 	ruleset_name.text = selected_ruleset.name;
 	add_cell_button.disabled = false;
 	add_rule_button.disabled = false;
-	for cell_material in selected_ruleset.materials:
+	for cell_material: CellMaterial in selected_ruleset.material_array():
 		var editor: CellEditor = cell_editor_scene.instantiate();
 		cells.add_child(editor);
 		editor.delete_requested.connect(_on_cell_delete_requested);
 		editor.cell_name_updated.connect(_on_cell_name_updated);
 		editor.initialize(selected_ruleset, cell_material);
-	for rule in selected_ruleset.rules:
+	for rule: Rule in selected_ruleset.rule_array():
 		add_rule_editor(rule);
 	disable_rule_move_buttons()
 
@@ -151,9 +149,7 @@ func _on_add_cell_button_pressed() -> void:
 
 func _on_cell_delete_requested(to_delete: CellEditor) -> void:
 	# print("a");
-	var index := selected_ruleset.materials.find(to_delete.type);
-	if index != -1:
-		selected_ruleset.materials.remove_at(index);
+	selected_ruleset.remove_material(to_delete.type);
 	to_delete.queue_free();
 
 

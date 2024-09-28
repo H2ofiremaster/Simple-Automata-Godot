@@ -24,18 +24,18 @@ func initialize(init_parent: RulesetEditor, init_ruleset: Ruleset, init_rule: Ru
 	parent = init_parent;
 	ruleset = init_ruleset;
 	rule = init_rule;
-	var input_pattern_value := rule.input; 
+	var input_pattern_value := rule.input();
 	input_pattern.initialize(ruleset, input_pattern_value);
-	var output_pattern_value := rule.output; 
+	var output_pattern_value := rule.output();
 	output_pattern.initialize(ruleset, output_pattern_value);
 	
-	for condition in rule.conditions:
+	for condition in rule.condition_array():
 		var editor: ConditionEditor = CONDITION_EDITOR.instantiate();
 		conditions.add_child(editor);
 		editor.initialize(self, ruleset, condition);
 	
-	self_modulate = rule.editor_color;
-	color_picker.color = rule.editor_color;
+	self_modulate = rule.editor_color();
+	color_picker.color = rule.editor_color();
 
 
 func update_cell_names() -> void:
@@ -46,7 +46,7 @@ func update_cell_names() -> void:
 			condition.pattern_input.update_cell_names();
 
 func delete_condition(editor: ConditionEditor) -> void:
-	var target_index := rule.conditions.find(editor.condition);
+	var target_index := rule.condition_array().find(editor.condition);
 	if target_index != -1:
 		rule.conditions.remove_at(target_index);
 	editor.queue_free();
@@ -83,7 +83,7 @@ func _on_collapse_button_toggled(toggled_on: bool) -> void:
 
 
 func _on_copy_button_pressed() -> void:
-	var index := parent.selected_ruleset.rules.find(rule);
+	var index := parent.selected_ruleset.rule_index(rule);
 	var clone := rule.full_clone();
 	parent.selected_ruleset.rules.insert(index, clone);
 	parent.add_rule_editor(clone, index);
@@ -91,5 +91,4 @@ func _on_copy_button_pressed() -> void:
 
 func _on_color_picker_color_changed(color: Color) -> void:
 	self.self_modulate = color;
-	rule.editor_color = color;
-
+	rule.set_editor_color(color);

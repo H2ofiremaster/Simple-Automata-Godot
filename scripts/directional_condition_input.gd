@@ -26,7 +26,7 @@ enum Direction {
 # Called when the node enters the scene tree for the first time.
 func initialize() -> void:
 	if editor.condition != null:
-		for direction in editor.condition.directions:
+		for direction in editor.condition.direction_array():
 			get_button(direction).button_pressed = true;
 
 
@@ -45,14 +45,7 @@ func get_button(direction: Direction) -> Button:
 
 
 func toggle_direction(direction: Direction, toggle_on: bool) -> void:
-	var directions := editor.condition.directions;
-	var desired_index := directions.find(direction);
-	if toggle_on:
-		if desired_index == -1:
-			directions.append(direction);
-	else:
-		if desired_index != -1:
-			directions.remove_at(desired_index);
+	editor.condition.toggle_direction(direction, toggle_on);
 
 func _on_northwest_toggled(toggled_on: bool) -> void:
 	toggle_direction(Direction.NORTHWEST, toggled_on);
